@@ -1,6 +1,6 @@
 # CultureCamp - 暑期托管报名协同服务
 
-CultureCamp 面向公共文化托管服务点。学生或检察联络员登记权益诉求并关联证据后，系统依据生效的分派规则确定承办机构与协作机构，支持法律咨询、心理辅导、劳动报酬、职业安全和平台争议等诉求的受理、转办、会商、升级、回访与审计。超期诉求自动升级，结案结论不可被后续规则覆盖，重复线索按幂等键合并。
+CultureCamp 面向图书馆、农家书屋和博物馆的暑期托管服务。馆员或志愿者登记学生报名、接送授权和活动诉求并关联材料后，系统依据生效的分派规则确定承办服务点与协作机构，支持报名受理、补正、转办、会商、升级、回访与审计。超期事项自动升级，结案结论不可被后续规则覆盖，重复报名按幂等键合并。
 
 - 语言：Go 1.26
 - 服务端口：**49660**（HTTP 入口默认监听）
@@ -133,15 +133,15 @@ curl -s -X POST http://localhost:49660/api/items \
   -H 'Content-Type: application/json' \
   -d '{
     "external_ref": "WIN-20260819-0001",
-    "title": "企业开办联合办理",
-    "description": "营业执照与刻章联合办理",
-    "applicant_name": "张三",
+    "title": "暑期托管报名材料补正",
+    "description": "图书馆托管报名缺少接送授权",
+    "applicant_name": "刘洵雅",
     "applicant_contact": "13800000001",
-    "materials": ["身份证明.pdf"],
-    "category": "企业登记",
-    "keywords": ["营业执照", "刻章"],
-    "reported_by": "受理员A",
-    "service_station_id": "WIN-03"
+    "materials": ["接送授权书.pdf"],
+    "category": "托管报名",
+    "keywords": ["图书馆", "接送授权"],
+    "reported_by": "馆员A",
+    "service_station_id": "GA-01"
   }'
 ```
 
@@ -151,8 +151,8 @@ curl -s -X POST http://localhost:49660/api/items \
 curl -s -X POST http://localhost:49660/api/batches/import \
   -H 'Content-Type: application/json' \
   -d '{"items":[
-    {"external_ref":"B-001","title":"食品经营许可","reported_by":"受理员B","service_station_id":"WIN-03"},
-    {"external_ref":"B-002","title":"户外招牌设置","reported_by":"受理员B","service_station_id":"WIN-03"}
+    {"external_ref":"B-001","title":"剪纸活动报名","reported_by":"馆员B","service_station_id":"GA-01"},
+    {"external_ref":"B-002","title":"国宝守护人研学报名","reported_by":"馆员B","service_station_id":"HN-01"}
   ]}'
 ```
 

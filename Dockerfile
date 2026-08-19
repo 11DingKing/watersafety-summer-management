@@ -4,11 +4,11 @@ WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 go build -o /leadjudge ./cmd/leadjudge
-RUN CGO_ENABLED=0 go build -o /leadtool ./cmd/leadtool
+RUN CGO_ENABLED=0 go build -o /culturecamp ./cmd/culturecamp
+RUN CGO_ENABLED=0 go build -o /culturectl ./cmd/culturectl
 
 FROM gcr.io/distroless/static-debian12:nonroot
-COPY --from=builder /leadjudge /leadjudge
-COPY --from=builder /leadtool /leadtool
+COPY --from=builder /culturecamp /culturecamp
+COPY --from=builder /culturectl /culturectl
 EXPOSE 49660
-ENTRYPOINT ["/leadjudge"]
+ENTRYPOINT ["/culturecamp"]

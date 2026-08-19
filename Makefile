@@ -16,16 +16,16 @@ fmt:
 	go fmt ./...
 
 run-service:
-	go run ./cmd/leadjudge
+	go run ./cmd/culturecamp
 
 run-tool:
-	go run ./cmd/leadtool
+	go run ./cmd/culturectl
 
 docker-build:
-	./build_eval_docker.sh leadjudge-eval linux/amd64
+	./build_eval_docker.sh culturecamp-eval linux/amd64
 
 docker-build-arm:
-	./build_eval_docker.sh leadjudge-eval linux/arm64
+	./build_eval_docker.sh culturecamp-eval linux/arm64
 
 tidy:
 	go mod tidy
