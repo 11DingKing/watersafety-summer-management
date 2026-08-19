@@ -10,15 +10,15 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"riderguard/internal/applog"
-	"riderguard/internal/config"
-	"riderguard/internal/httpapi"
-	"riderguard/internal/repo"
-	"riderguard/internal/scheduler"
+	"culturecamp/internal/applog"
+	"culturecamp/internal/config"
+	"culturecamp/internal/httpapi"
+	"culturecamp/internal/repo"
+	"culturecamp/internal/scheduler"
 )
 
 func main() {
-	configPath := os.Getenv("RIDERGUARD_CONFIG")
+	configPath := os.Getenv("CULTURECAMP_CONFIG")
 	if len(os.Args) > 1 {
 		configPath = os.Args[1]
 	}

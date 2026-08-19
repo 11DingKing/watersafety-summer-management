@@ -1,6 +1,6 @@
-# RiderGuard - 骑手权益诉求协同服务
+# CultureCamp - 暑期托管报名协同服务
 
-RiderGuard 面向新就业群体权益保护检察服务站。骑手或检察联络员登记权益诉求并关联证据后，系统依据生效的分派规则确定承办机构与协作机构，支持法律咨询、心理辅导、劳动报酬、职业安全和平台争议等诉求的受理、转办、会商、升级、回访与审计。超期诉求自动升级，结案结论不可被后续规则覆盖，重复线索按幂等键合并。
+CultureCamp 面向公共文化托管服务点。学生或检察联络员登记权益诉求并关联证据后，系统依据生效的分派规则确定承办机构与协作机构，支持法律咨询、心理辅导、劳动报酬、职业安全和平台争议等诉求的受理、转办、会商、升级、回访与审计。超期诉求自动升级，结案结论不可被后续规则覆盖，重复线索按幂等键合并。
 
 - 语言：Go 1.26
 - 服务端口：**49660**（HTTP 入口默认监听）
@@ -10,8 +10,8 @@ RiderGuard 面向新就业群体权益保护检察服务站。骑手或检察联
 
 ```
 cmd/
-  riderguard/        HTTP 服务入口，优雅关闭、信号处理
-  riderctl/         运维命令行（init / import / export / reconcile / rebuild-index / diagnose）
+  culturecamp/        HTTP 服务入口，优雅关闭、信号处理
+  culturectl/         运维命令行（init / import / export / reconcile / rebuild-index / diagnose）
 internal/
   domain/           领域模型：RightsCase / Rule / Referral / Escalation / AuditEntry / PermanentFailure / ImportBatch
                     显式状态机跃迁表、领域错误、时钟接口
@@ -39,7 +39,7 @@ migrations/
 
 核心业务实体落在分片文件（追加写 JSONL，按日期分桶）与 SQLite 索引（查询、事务、唯一约束）中，二者通过业务键关联：
 
-- **权益诉求 items** — 主实体，`external_ref` 唯一（重复报送只登记一次），承载骑手、证据、诉求类别、承办机构、承诺时限和升级层级。
+- **权益诉求 items** — 主实体，`external_ref` 唯一（重复报送只登记一次），承载学生、证据、诉求类别、承办机构、承诺时限和升级层级。
 - **分办规则 rules** — 带版本号与生效窗口；新规则生效时旧规则被标记为 `superseded`，已办结事项保留当时规则结论。
 - **裁定记录 assignments** — 通过 `item_id` 关联事项、通过 `rule_version` 关联规则；`is_current` 标记当前生效裁定，升级时旧裁定被置为非当前。
 - **升级记录 escalations** — 通过 `item_id` 关联事项，记录层级跃迁、新旧牵头部门、新承诺时限。
@@ -51,27 +51,27 @@ migrations/
 
 ## 配置项
 
-配置通过 YAML 文件加载，环境变量覆盖（前缀 `RIDERGUARD_`）。参考 `config.example.yaml` 与 `.env.example`。
+配置通过 YAML 文件加载，环境变量覆盖（前缀 `CULTURECAMP_`）。参考 `config.example.yaml` 与 `.env.example`。
 
 | 配置键 | 环境变量 | 默认值 | 说明 |
 |---|---|---|---|
-| server.port | RIDERGUARD_SERVER_PORT | 49660 | HTTP 监听端口 |
-| server.read_timeout | RIDERGUARD_SERVER_READ_TIMEOUT | 30s | 读超时 |
-| server.write_timeout | RIDERGUARD_SERVER_WRITE_TIMEOUT | 30s | 写超时 |
-| server.shutdown_timeout | RIDERGUARD_SERVER_SHUTDOWN_TIMEOUT | 15s | 优雅关闭超时 |
-| storage.data_dir | RIDERGUARD_STORAGE_DATA_DIR | ./data | 数据目录（分片 + index.db） |
-| storage.shard_max_size | RIDERGUARD_STORAGE_SHARD_MAX_SIZE | 1048576 | 单分片文件上限字节，超出轮转 |
-| storage.sync_on_write | RIDERGUARD_STORAGE_SYNC_ON_WRITE | true | 每次追加是否 fsync |
-| scheduler.escalation_interval | RIDERGUARD_SCHEDULER_ESCALATION_INTERVAL | 30s | 超期升级巡检周期 |
-| scheduler.reconciliation_interval | RIDERGUARD_SCHEDULER_RECONCILIATION_INTERVAL | 5m | 核对巡检周期 |
-| scheduler.reeval_interval | RIDERGUARD_SCHEDULER_REEVAL_INTERVAL | 1m | 规则版本演进重评估巡检周期 |
-| scheduler.max_retries | RIDERGUARD_SCHEDULER_MAX_RETRIES | 3 | 最大重试次数 |
-| scheduler.base_backoff | RIDERGUARD_SCHEDULER_BASE_BACKOFF | 1s | 退避基数 |
-| scheduler.task_timeout | RIDERGUARD_SCHEDULER_TASK_TIMEOUT | 10s | 单次任务超时 |
-| business.default_deadline | RIDERGUARD_BUSINESS_DEFAULT_DEADLINE | 72h | 默认承诺时限 |
-| business.escalation_deadline_extension | RIDERGUARD_BUSINESS_ESCALATION_DEADLINE_EXTENSION | 48h | 升级后新承诺时限 |
-| business.max_escalation_level | RIDERGUARD_BUSINESS_MAX_ESCALATION_LEVEL | 3 | 最大升级层级 |
-| auth.bootstrap_users | RIDERGUARD_AUTH_BOOTSTRAP_USERS | 无默认值 | 首次启动时通过 JSON 注入账号；口令只用于生成 bcrypt 哈希，不写入配置文件 |
+| server.port | CULTURECAMP_SERVER_PORT | 49660 | HTTP 监听端口 |
+| server.read_timeout | CULTURECAMP_SERVER_READ_TIMEOUT | 30s | 读超时 |
+| server.write_timeout | CULTURECAMP_SERVER_WRITE_TIMEOUT | 30s | 写超时 |
+| server.shutdown_timeout | CULTURECAMP_SERVER_SHUTDOWN_TIMEOUT | 15s | 优雅关闭超时 |
+| storage.data_dir | CULTURECAMP_STORAGE_DATA_DIR | ./data | 数据目录（分片 + index.db） |
+| storage.shard_max_size | CULTURECAMP_STORAGE_SHARD_MAX_SIZE | 1048576 | 单分片文件上限字节，超出轮转 |
+| storage.sync_on_write | CULTURECAMP_STORAGE_SYNC_ON_WRITE | true | 每次追加是否 fsync |
+| scheduler.escalation_interval | CULTURECAMP_SCHEDULER_ESCALATION_INTERVAL | 30s | 超期升级巡检周期 |
+| scheduler.reconciliation_interval | CULTURECAMP_SCHEDULER_RECONCILIATION_INTERVAL | 5m | 核对巡检周期 |
+| scheduler.reeval_interval | CULTURECAMP_SCHEDULER_REEVAL_INTERVAL | 1m | 规则版本演进重评估巡检周期 |
+| scheduler.max_retries | CULTURECAMP_SCHEDULER_MAX_RETRIES | 3 | 最大重试次数 |
+| scheduler.base_backoff | CULTURECAMP_SCHEDULER_BASE_BACKOFF | 1s | 退避基数 |
+| scheduler.task_timeout | CULTURECAMP_SCHEDULER_TASK_TIMEOUT | 10s | 单次任务超时 |
+| business.default_deadline | CULTURECAMP_BUSINESS_DEFAULT_DEADLINE | 72h | 默认承诺时限 |
+| business.escalation_deadline_extension | CULTURECAMP_BUSINESS_ESCALATION_DEADLINE_EXTENSION | 48h | 升级后新承诺时限 |
+| business.max_escalation_level | CULTURECAMP_BUSINESS_MAX_ESCALATION_LEVEL | 3 | 最大升级层级 |
+| auth.bootstrap_users | CULTURECAMP_AUTH_BOOTSTRAP_USERS | 无默认值 | 首次启动时通过 JSON 注入账号；口令只用于生成 bcrypt 哈希，不写入配置文件 |
 
 ## 迁移方式
 
@@ -84,15 +84,15 @@ migrations/
 go build ./...
 
 # 初始化数据目录并写入默认分办规则
-go run ./cmd/riderctl init -data-dir ./data
+go run ./cmd/culturectl init -data-dir ./data
 
 # 启动 HTTP 服务（默认端口 49660）。首次启动必须注入至少一个账号；请在 shell
 # 或密钥管理器中提供真实口令，不要把它写入配置文件或提交到 Git。
-RIDERGUARD_AUTH_BOOTSTRAP_USERS='[{"id":"u-admin","username":"admin","password":"<strong-password>","role":"admin"}]' \\
-  go run ./cmd/riderguard config.example.yaml
+CULTURECAMP_AUTH_BOOTSTRAP_USERS='[{"id":"u-admin","username":"admin","password":"<strong-password>","role":"admin"}]' \\
+  go run ./cmd/culturecamp config.example.yaml
 
 # 或用环境变量覆盖端口与数据目录
-RIDERGUARD_SERVER_PORT=49660 RIDERGUARD_STORAGE_DATA_DIR=./data go run ./cmd/riderguard
+CULTURECAMP_SERVER_PORT=49660 CULTURECAMP_STORAGE_DATA_DIR=./data go run ./cmd/culturecamp
 ```
 
 服务启动后：
@@ -104,7 +104,7 @@ RIDERGUARD_SERVER_PORT=49660 RIDERGUARD_STORAGE_DATA_DIR=./data go run ./cmd/rid
 
 | 方法 | 路径 | 说明 |
 |---|---|---|
-| POST | /api/items | 登记骑手权益诉求并分派承办机构 |
+| POST | /api/items | 登记暑期托管报名并分派承办机构 |
 | GET | /api/items | 分页查询诉求（状态/承办机构/服务站/时间/超期筛选） |
 | GET | /api/items/{id} | 事项详情（含裁定、升级、审计链） |
 | PATCH | /api/items/{id} | 修改事项信息 |
@@ -171,12 +171,12 @@ curl -s 'http://localhost:49660/api/stats/backlog'
 ## 运维命令行
 
 ```bash
-go run ./cmd/riderctl init           # 初始化数据目录与默认规则
-go run ./cmd/riderctl import -file items.json
-go run ./cmd/riderctl export -from 2026-08-01T00:00:00Z -to 2026-08-31T23:59:59Z -out items.jsonl
-go run ./cmd/riderctl reconcile       # 分片与索引核对
-go run ./cmd/riderctl rebuild-index  # 从分片重建索引（损坏分片跳过上报）
-go run ./cmd/riderctl diagnose        # 状态诊断
+go run ./cmd/culturectl init           # 初始化数据目录与默认规则
+go run ./cmd/culturectl import -file items.json
+go run ./cmd/culturectl export -from 2026-08-01T00:00:00Z -to 2026-08-31T23:59:59Z -out items.jsonl
+go run ./cmd/culturectl reconcile       # 分片与索引核对
+go run ./cmd/culturectl rebuild-index  # 从分片重建索引（损坏分片跳过上报）
+go run ./cmd/culturectl diagnose        # 状态诊断
 ```
 
 ## 测试命令

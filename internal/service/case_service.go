@@ -8,10 +8,10 @@ import (
 
 	"github.com/google/uuid"
 
-	"riderguard/internal/auditlog"
-	"riderguard/internal/dispatch"
-	"riderguard/internal/domain"
-	"riderguard/internal/store"
+	"culturecamp/internal/auditlog"
+	"culturecamp/internal/dispatch"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/store"
 )
 
 type ItemService struct {

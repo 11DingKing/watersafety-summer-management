@@ -8,10 +8,10 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"riderguard/internal/applog"
-	"riderguard/internal/config"
-	"riderguard/internal/service"
-	"riderguard/internal/store"
+	"culturecamp/internal/applog"
+	"culturecamp/internal/config"
+	"culturecamp/internal/service"
+	"culturecamp/internal/store"
 )
 
 type Scheduler struct {

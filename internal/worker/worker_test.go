@@ -12,13 +12,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"riderguard/internal/applog"
-	"riderguard/internal/auditlog"
-	"riderguard/internal/config"
-	"riderguard/internal/dispatch"
-	"riderguard/internal/domain"
-	"riderguard/internal/repo"
-	"riderguard/internal/service"
+	"culturecamp/internal/applog"
+	"culturecamp/internal/auditlog"
+	"culturecamp/internal/config"
+	"culturecamp/internal/dispatch"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/repo"
+	"culturecamp/internal/service"
 )
 
 type fakeTicker struct{ ch chan time.Time }

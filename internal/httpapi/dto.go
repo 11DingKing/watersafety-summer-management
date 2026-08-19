@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-chi/chi/v5/middleware"
 
-	"riderguard/internal/domain"
+	"culturecamp/internal/domain"
 )
 
 type ErrorResponse struct {

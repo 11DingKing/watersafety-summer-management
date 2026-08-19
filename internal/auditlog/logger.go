@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"riderguard/internal/domain"
+	"culturecamp/internal/domain"
 )
 
 func NewEntry(entityID, entityType, action, actor string, timestamp time.Time, details string) *domain.AuditEntry {

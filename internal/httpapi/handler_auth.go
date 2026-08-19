@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"riderguard/internal/auth"
+	"culturecamp/internal/auth"
 )
 
 type loginRequest struct {

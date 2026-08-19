@@ -7,8 +7,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"riderguard/internal/domain"
-	"riderguard/internal/store"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/store"
 )
 
 func (s *Scheduler) runWithRetry(ctx context.Context, taskName string, fn func(context.Context) error) {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"riderguard/internal/domain"
+	"culturecamp/internal/domain"
 )
 
 func (s *Server) getBacklog(w http.ResponseWriter, r *http.Request) {

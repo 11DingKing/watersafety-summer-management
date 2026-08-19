@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"riderguard/internal/auditlog"
-	"riderguard/internal/domain"
-	"riderguard/internal/store"
+	"culturecamp/internal/auditlog"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/store"
 )
 
 // ErrRuleReeval is a sentinel wrapped into every worker-originated error so

@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"riderguard/internal/service"
+	"culturecamp/internal/service"
 )
 
 func (s *Server) createRule(w http.ResponseWriter, r *http.Request) {

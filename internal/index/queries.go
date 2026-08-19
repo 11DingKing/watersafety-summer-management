@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"riderguard/internal/domain"
+	"culturecamp/internal/domain"
 )
 
 type scanner interface {

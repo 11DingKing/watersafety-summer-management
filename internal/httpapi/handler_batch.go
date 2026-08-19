@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"riderguard/internal/domain"
-	"riderguard/internal/service"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/service"
 )
 
 func (s *Server) batchImport(w http.ResponseWriter, r *http.Request) {

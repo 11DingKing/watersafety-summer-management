@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"riderguard/internal/domain"
+	"culturecamp/internal/domain"
 )
 
 type Tx interface {

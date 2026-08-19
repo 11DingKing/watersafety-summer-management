@@ -1,4 +1,4 @@
-module riderguard
+module culturecamp
 
 go 1.26
 

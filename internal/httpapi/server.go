@@ -12,14 +12,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
 
-	"riderguard/internal/applog"
-	"riderguard/internal/auth"
-	"riderguard/internal/config"
-	"riderguard/internal/dispatch"
-	"riderguard/internal/scheduler"
-	"riderguard/internal/service"
-	"riderguard/internal/store"
-	"riderguard/internal/worker"
+	"culturecamp/internal/applog"
+	"culturecamp/internal/auth"
+	"culturecamp/internal/config"
+	"culturecamp/internal/dispatch"
+	"culturecamp/internal/scheduler"
+	"culturecamp/internal/service"
+	"culturecamp/internal/store"
+	"culturecamp/internal/worker"
 )
 
 type Server struct {

@@ -9,8 +9,8 @@ import (
 
 	"github.com/go-chi/chi/v5/middleware"
 
-	"riderguard/internal/applog"
-	"riderguard/internal/auth"
+	"culturecamp/internal/applog"
+	"culturecamp/internal/auth"
 )
 
 type authContextKey struct{}

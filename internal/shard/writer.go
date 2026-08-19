@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"riderguard/internal/domain"
+	"culturecamp/internal/domain"
 )
 
 type Location struct {

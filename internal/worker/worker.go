@@ -8,10 +8,10 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"riderguard/internal/applog"
-	"riderguard/internal/config"
-	"riderguard/internal/dispatch"
-	"riderguard/internal/store"
+	"culturecamp/internal/applog"
+	"culturecamp/internal/config"
+	"culturecamp/internal/dispatch"
+	"culturecamp/internal/store"
 )
 
 // Ticker is the periodic tick source that drives the worker loop. The production

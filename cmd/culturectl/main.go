@@ -10,11 +10,11 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"riderguard/internal/applog"
-	"riderguard/internal/config"
-	"riderguard/internal/dispatch"
-	"riderguard/internal/repo"
-	"riderguard/internal/service"
+	"culturecamp/internal/applog"
+	"culturecamp/internal/config"
+	"culturecamp/internal/dispatch"
+	"culturecamp/internal/repo"
+	"culturecamp/internal/service"
 )
 
 func main() {
@@ -62,9 +62,9 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Fprintln(os.Stderr, `riderctl - operations CLI for lead responsibility adjudication service
+	fmt.Fprintln(os.Stderr, `culturectl - operations CLI for lead responsibility adjudication service
 
-Usage: riderctl <command> [flags]
+Usage: culturectl <command> [flags]
 
 Commands:
   init           Initialize data directory and schema

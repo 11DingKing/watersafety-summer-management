@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"riderguard/internal/domain"
-	"riderguard/internal/service"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/service"
 )
 
 func TestBatchImport_RowLevelResults(t *testing.T) {

@@ -16,14 +16,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"riderguard/internal/applog"
-	"riderguard/internal/auth"
-	"riderguard/internal/config"
-	"riderguard/internal/domain"
-	"riderguard/internal/httpapi"
-	"riderguard/internal/repo"
-	"riderguard/internal/scheduler"
-	"riderguard/internal/service"
+	"culturecamp/internal/applog"
+	"culturecamp/internal/auth"
+	"culturecamp/internal/config"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/httpapi"
+	"culturecamp/internal/repo"
+	"culturecamp/internal/scheduler"
+	"culturecamp/internal/service"
 )
 
 func setupHTTPTest(t *testing.T) (*httptest.Server, *repo.Store, *clock.Mock) {

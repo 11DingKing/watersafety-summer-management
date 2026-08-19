@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"riderguard/internal/domain"
-	"riderguard/internal/index"
-	"riderguard/internal/shard"
-	"riderguard/internal/store"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/index"
+	"culturecamp/internal/shard"
+	"culturecamp/internal/store"
 )
 
 type Store struct {

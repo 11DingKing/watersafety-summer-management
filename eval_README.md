@@ -1,4 +1,4 @@
-# RiderGuard Eval — Government Service Lead-Responsibility Adjudication
+# CultureCamp Eval — Government Service Lead-Responsibility Adjudication
 
 ## Purpose
 Go backend service that adjudicates a unique lead agency for every
@@ -18,32 +18,32 @@ The directory contains:
 ```bash
 go build ./...
 go vet ./...
-go run ./cmd/riderguard        # start HTTP service
-go run ./cmd/riderctl init --data-dir ./data   # initialise storage
+go run ./cmd/culturecamp        # start HTTP service
+go run ./cmd/culturectl init --data-dir ./data   # initialise storage
 go test ./...
 ```
 
 ## Running the Service (port 49660)
 ```bash
-export RIDERGUARD_SERVER_PORT=49660
-export RIDERGUARD_STORAGE_DATA_DIR=./data
-go run ./cmd/riderguard
+export CULTURECAMP_SERVER_PORT=49660
+export CULTURECAMP_STORAGE_DATA_DIR=./data
+go run ./cmd/culturecamp
 # Health:   curl http://localhost:49660/healthz
 # Readiness: curl http://localhost:49660/readyz
 ```
 
 ## CLI Tool
 ```bash
-go run ./cmd/riderctl init      --data-dir ./data
-go run ./cmd/riderctl import    --data-dir ./data --file items.jsonl
-go run ./cmd/riderctl export    --data-dir ./data --from 2026-08-01 --to 2026-08-31 --out export.jsonl
-go run ./cmd/riderctl reconcile --data-dir ./data
-go run ./cmd/riderctl rebuild-index --data-dir ./data
-go run ./cmd/riderctl diagnose  --data-dir ./data
+go run ./cmd/culturectl init      --data-dir ./data
+go run ./cmd/culturectl import    --data-dir ./data --file items.jsonl
+go run ./cmd/culturectl export    --data-dir ./data --from 2026-08-01 --to 2026-08-31 --out export.jsonl
+go run ./cmd/culturectl reconcile --data-dir ./data
+go run ./cmd/culturectl rebuild-index --data-dir ./data
+go run ./cmd/culturectl diagnose  --data-dir ./data
 ```
 
 ## Docker Builds
 ```bash
-./build_eval_docker.sh riderguard-eval linux/amd64
-./build_eval_docker.sh riderguard-eval linux/arm64
+./build_eval_docker.sh culturecamp-eval linux/amd64
+./build_eval_docker.sh culturecamp-eval linux/arm64
 ```

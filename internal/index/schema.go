@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"riderguard/migrations"
+	"culturecamp/migrations"
 
 	_ "modernc.org/sqlite"
 )

@@ -150,120 +150,120 @@ func (c *Config) Validate() error {
 
 func applyEnvOverrides(cfg *Config) {
 	envMap := map[string]string{
-		"RIDERGUARD_SERVER_PORT":                            "",
-		"RIDERGUARD_SERVER_READ_TIMEOUT":                    "",
-		"RIDERGUARD_SERVER_WRITE_TIMEOUT":                   "",
-		"RIDERGUARD_SERVER_SHUTDOWN_TIMEOUT":                "",
-		"RIDERGUARD_STORAGE_DATA_DIR":                       "",
-		"RIDERGUARD_STORAGE_SHARD_MAX_SIZE":                 "",
-		"RIDERGUARD_STORAGE_SYNC_ON_WRITE":                  "",
-		"RIDERGUARD_SCHEDULER_ESCALATION_INTERVAL":          "",
-		"RIDERGUARD_SCHEDULER_RECONCILIATION_INTERVAL":      "",
-		"RIDERGUARD_SCHEDULER_REEVAL_INTERVAL":              "",
-		"RIDERGUARD_SCHEDULER_MAX_RETRIES":                  "",
-		"RIDERGUARD_SCHEDULER_BASE_BACKOFF":                 "",
-		"RIDERGUARD_SCHEDULER_TASK_TIMEOUT":                 "",
-		"RIDERGUARD_LOGGING_LEVEL":                          "",
-		"RIDERGUARD_LOGGING_FORMAT":                         "",
-		"RIDERGUARD_BUSINESS_DEFAULT_DEADLINE":              "",
-		"RIDERGUARD_BUSINESS_ESCALATION_DEADLINE_EXTENSION": "",
-		"RIDERGUARD_BUSINESS_MAX_ESCALATION_LEVEL":          "",
-		"RIDERGUARD_AUTH_STORE_PATH":                        "",
-		"RIDERGUARD_AUTH_SESSION_TTL":                       "",
-		"RIDERGUARD_AUTH_BOOTSTRAP_USERS":                   "",
+		"CULTURECAMP_SERVER_PORT":                            "",
+		"CULTURECAMP_SERVER_READ_TIMEOUT":                    "",
+		"CULTURECAMP_SERVER_WRITE_TIMEOUT":                   "",
+		"CULTURECAMP_SERVER_SHUTDOWN_TIMEOUT":                "",
+		"CULTURECAMP_STORAGE_DATA_DIR":                       "",
+		"CULTURECAMP_STORAGE_SHARD_MAX_SIZE":                 "",
+		"CULTURECAMP_STORAGE_SYNC_ON_WRITE":                  "",
+		"CULTURECAMP_SCHEDULER_ESCALATION_INTERVAL":          "",
+		"CULTURECAMP_SCHEDULER_RECONCILIATION_INTERVAL":      "",
+		"CULTURECAMP_SCHEDULER_REEVAL_INTERVAL":              "",
+		"CULTURECAMP_SCHEDULER_MAX_RETRIES":                  "",
+		"CULTURECAMP_SCHEDULER_BASE_BACKOFF":                 "",
+		"CULTURECAMP_SCHEDULER_TASK_TIMEOUT":                 "",
+		"CULTURECAMP_LOGGING_LEVEL":                          "",
+		"CULTURECAMP_LOGGING_FORMAT":                         "",
+		"CULTURECAMP_BUSINESS_DEFAULT_DEADLINE":              "",
+		"CULTURECAMP_BUSINESS_ESCALATION_DEADLINE_EXTENSION": "",
+		"CULTURECAMP_BUSINESS_MAX_ESCALATION_LEVEL":          "",
+		"CULTURECAMP_AUTH_STORE_PATH":                        "",
+		"CULTURECAMP_AUTH_SESSION_TTL":                       "",
+		"CULTURECAMP_AUTH_BOOTSTRAP_USERS":                   "",
 	}
 
-	if v := os.Getenv("RIDERGUARD_SERVER_PORT"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SERVER_PORT"); v != "" {
 		if port, err := strconv.Atoi(v); err == nil {
 			cfg.Server.Port = port
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_SERVER_READ_TIMEOUT"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SERVER_READ_TIMEOUT"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Server.ReadTimeout = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_SERVER_WRITE_TIMEOUT"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SERVER_WRITE_TIMEOUT"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Server.WriteTimeout = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_SERVER_SHUTDOWN_TIMEOUT"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SERVER_SHUTDOWN_TIMEOUT"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Server.ShutdownTimeout = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_STORAGE_DATA_DIR"); v != "" {
+	if v := os.Getenv("CULTURECAMP_STORAGE_DATA_DIR"); v != "" {
 		cfg.Storage.DataDir = v
 	}
-	if v := os.Getenv("RIDERGUARD_STORAGE_SHARD_MAX_SIZE"); v != "" {
+	if v := os.Getenv("CULTURECAMP_STORAGE_SHARD_MAX_SIZE"); v != "" {
 		if n, err := strconv.ParseInt(v, 10, 64); err == nil {
 			cfg.Storage.ShardMaxSize = n
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_STORAGE_SYNC_ON_WRITE"); v != "" {
+	if v := os.Getenv("CULTURECAMP_STORAGE_SYNC_ON_WRITE"); v != "" {
 		cfg.Storage.SyncOnWrite = strings.ToLower(v) == "true"
 	}
-	if v := os.Getenv("RIDERGUARD_SCHEDULER_ESCALATION_INTERVAL"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SCHEDULER_ESCALATION_INTERVAL"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Scheduler.EscalationInterval = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_SCHEDULER_RECONCILIATION_INTERVAL"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SCHEDULER_RECONCILIATION_INTERVAL"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Scheduler.ReconciliationInterval = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_SCHEDULER_REEVAL_INTERVAL"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SCHEDULER_REEVAL_INTERVAL"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Scheduler.ReevalInterval = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_SCHEDULER_MAX_RETRIES"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SCHEDULER_MAX_RETRIES"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil {
 			cfg.Scheduler.MaxRetries = n
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_SCHEDULER_BASE_BACKOFF"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SCHEDULER_BASE_BACKOFF"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Scheduler.BaseBackoff = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_SCHEDULER_TASK_TIMEOUT"); v != "" {
+	if v := os.Getenv("CULTURECAMP_SCHEDULER_TASK_TIMEOUT"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Scheduler.TaskTimeout = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_LOGGING_LEVEL"); v != "" {
+	if v := os.Getenv("CULTURECAMP_LOGGING_LEVEL"); v != "" {
 		cfg.Logging.Level = v
 	}
-	if v := os.Getenv("RIDERGUARD_LOGGING_FORMAT"); v != "" {
+	if v := os.Getenv("CULTURECAMP_LOGGING_FORMAT"); v != "" {
 		cfg.Logging.Format = v
 	}
-	if v := os.Getenv("RIDERGUARD_BUSINESS_DEFAULT_DEADLINE"); v != "" {
+	if v := os.Getenv("CULTURECAMP_BUSINESS_DEFAULT_DEADLINE"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Business.DefaultDeadline = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_BUSINESS_ESCALATION_DEADLINE_EXTENSION"); v != "" {
+	if v := os.Getenv("CULTURECAMP_BUSINESS_ESCALATION_DEADLINE_EXTENSION"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Business.EscalationDeadlineExtension = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_BUSINESS_MAX_ESCALATION_LEVEL"); v != "" {
+	if v := os.Getenv("CULTURECAMP_BUSINESS_MAX_ESCALATION_LEVEL"); v != "" {
 		if n, err := strconv.Atoi(v); err == nil {
 			cfg.Business.MaxEscalationLevel = n
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_AUTH_STORE_PATH"); v != "" {
+	if v := os.Getenv("CULTURECAMP_AUTH_STORE_PATH"); v != "" {
 		cfg.Auth.StorePath = v
 	}
-	if v := os.Getenv("RIDERGUARD_AUTH_SESSION_TTL"); v != "" {
+	if v := os.Getenv("CULTURECAMP_AUTH_SESSION_TTL"); v != "" {
 		if d, err := time.ParseDuration(v); err == nil {
 			cfg.Auth.SessionTTL = d
 		}
 	}
-	if v := os.Getenv("RIDERGUARD_AUTH_BOOTSTRAP_USERS"); v != "" {
+	if v := os.Getenv("CULTURECAMP_AUTH_BOOTSTRAP_USERS"); v != "" {
 		var users []AuthBootstrapUser
 		if err := json.Unmarshal([]byte(v), &users); err != nil {
 			cfg.Auth.BootstrapError = err.Error()

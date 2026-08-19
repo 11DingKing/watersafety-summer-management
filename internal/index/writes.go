@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"riderguard/internal/domain"
+	"culturecamp/internal/domain"
 )
 
 func (t *Tx) InsertItem(ctx context.Context, item *domain.RightsCase) error {

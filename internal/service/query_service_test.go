@@ -7,8 +7,8 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"riderguard/internal/domain"
-	"riderguard/internal/store"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/store"
 )
 
 type detailFailureStore struct {

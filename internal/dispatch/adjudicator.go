@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"riderguard/internal/domain"
+	"culturecamp/internal/domain"
 )
 
 type Adjudicator struct {

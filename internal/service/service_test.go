@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"riderguard/internal/dispatch"
-	"riderguard/internal/domain"
-	"riderguard/internal/repo"
-	"riderguard/internal/service"
+	"culturecamp/internal/dispatch"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/repo"
+	"culturecamp/internal/service"
 )
 
 func setupService(t *testing.T) (*service.ItemService, *service.EscalationService,

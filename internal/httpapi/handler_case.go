@@ -7,8 +7,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"riderguard/internal/domain"
-	"riderguard/internal/service"
+	"culturecamp/internal/domain"
+	"culturecamp/internal/service"
 )
 
 func (s *Server) registerItem(w http.ResponseWriter, r *http.Request) {
