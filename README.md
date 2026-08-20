@@ -1,6 +1,6 @@
-# CultureCamp - 暑期托管报名协同服务
+# WaterSafety - 儿童防溺水安全治理服务
 
-CultureCamp 面向图书馆、农家书屋和博物馆的暑期托管服务。馆员或志愿者登记学生报名、接送授权和活动诉求并关联材料后，系统依据生效的分派规则确定承办服务点与协作机构，支持报名受理、补正、转办、会商、升级、回访与审计。超期事项自动升级，结案结论不可被后续规则覆盖，重复报名按幂等键合并。
+WaterSafety 面向学校、社区和公共水域管理部门的儿童防溺水协同治理。教师、巡查员和应急协调员登记风险线索、课程培训和水域巡查记录并关联材料后，系统依据生效的分派规则确定牵头单位与协作机构，支持风险受理、补正、转办、会商、升级、回访与审计。超期风险自动升级，已闭环结论不可被后续规则覆盖，重复线索按幂等键合并。
 
 - 语言：Go 1.26
 - 服务端口：**49660**（HTTP 入口默认监听）
@@ -126,22 +126,22 @@ CULTURECAMP_SERVER_PORT=49660 CULTURECAMP_STORAGE_DATA_DIR=./data go run ./cmd/c
 
 ### 示例请求（端口 49660）
 
-登记事项：
+登记一条校园或水域风险线索：
 
 ```bash
 curl -s -X POST http://localhost:49660/api/items \
   -H 'Content-Type: application/json' \
   -d '{
     "external_ref": "WIN-20260819-0001",
-    "title": "暑期托管报名材料补正",
-    "description": "图书馆托管报名缺少接送授权",
-    "applicant_name": "刘洵雅",
+    "title": "河道巡查发现儿童戏水风险",
+    "description": "巡查员在灌溉渠附近发现未设置警示牌",
+    "applicant_name": "巡查员李明",
     "applicant_contact": "13800000001",
-    "materials": ["接送授权书.pdf"],
-    "category": "托管报名",
-    "keywords": ["图书馆", "接送授权"],
-    "reported_by": "馆员A",
-    "service_station_id": "GA-01"
+    "materials": ["现场照片.jpg"],
+    "category": "水域风险",
+    "keywords": ["灌溉渠", "警示牌"],
+    "reported_by": "巡查员李明",
+    "service_station_id": "SZ-07"
   }'
 ```
 
@@ -151,8 +151,8 @@ curl -s -X POST http://localhost:49660/api/items \
 curl -s -X POST http://localhost:49660/api/batches/import \
   -H 'Content-Type: application/json' \
   -d '{"items":[
-    {"external_ref":"B-001","title":"剪纸活动报名","reported_by":"馆员B","service_station_id":"GA-01"},
-    {"external_ref":"B-002","title":"国宝守护人研学报名","reported_by":"馆员B","service_station_id":"HN-01"}
+    {"external_ref":"B-001","title":"学校生存游泳课程补报","reported_by":"教师王芳","service_station_id":"SC-03"},
+    {"external_ref":"B-002","title":"池塘巡查隐患整改","reported_by":"村干部赵强","service_station_id":"SC-03"}
   ]}'
 ```
 
