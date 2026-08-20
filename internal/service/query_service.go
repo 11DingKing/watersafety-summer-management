@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"culturecamp/internal/auditlog"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/store"
+	"watersafety/internal/auditlog"
+	"watersafety/internal/domain"
+	"watersafety/internal/store"
 )
 
 type QueryService struct {
@@ -19,7 +19,7 @@ func NewQueryService(s store.Store, clock domain.Clock) *QueryService {
 }
 
 type ItemDetail struct {
-	RightsCase  *domain.RightsCase   `json:"item"`
+	RiskCase    *domain.RiskCase     `json:"item"`
 	Assignments []*domain.Referral   `json:"assignments"`
 	Escalations []*domain.Escalation `json:"escalations"`
 	Audit       []*domain.AuditEntry `json:"audit"`
@@ -43,7 +43,7 @@ func (s *QueryService) GetItemDetail(ctx context.Context, id string) (*ItemDetai
 		return nil, fmt.Errorf("list audit: %w", err)
 	}
 	return &ItemDetail{
-		RightsCase:  item,
+		RiskCase:    item,
 		Assignments: assignments,
 		Escalations: escalations,
 		Audit:       audit,
@@ -53,7 +53,7 @@ func (s *QueryService) GetItemDetail(ctx context.Context, id string) (*ItemDetai
 type BacklogStats struct {
 	StatusCounts map[domain.ItemStatus]int `json:"status_counts"`
 	OverdueCount int                       `json:"overdue_count"`
-	OverdueItems []*domain.RightsCase      `json:"overdue_items"`
+	OverdueItems []*domain.RiskCase        `json:"overdue_items"`
 }
 
 func (s *QueryService) GetBacklog(ctx context.Context) (*BacklogStats, error) {
@@ -101,10 +101,10 @@ func (s *QueryService) ListAudit(ctx context.Context, filter domain.AuditFilter)
 	return s.store.ListAudit(ctx, filter)
 }
 
-func (s *QueryService) ListItems(ctx context.Context, filter domain.ItemFilter) ([]*domain.RightsCase, int, error) {
+func (s *QueryService) ListItems(ctx context.Context, filter domain.ItemFilter) ([]*domain.RiskCase, int, error) {
 	return s.store.ListItems(ctx, filter)
 }
 
-func (s *QueryService) GetItem(ctx context.Context, id string) (*domain.RightsCase, error) {
+func (s *QueryService) GetItem(ctx context.Context, id string) (*domain.RiskCase, error) {
 	return s.store.GetItem(ctx, id)
 }

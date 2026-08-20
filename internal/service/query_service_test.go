@@ -7,17 +7,17 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"culturecamp/internal/domain"
-	"culturecamp/internal/store"
+	"watersafety/internal/domain"
+	"watersafety/internal/store"
 )
 
 type detailFailureStore struct {
 	store.Store
-	item *domain.RightsCase
+	item *domain.RiskCase
 	err  error
 }
 
-func (s detailFailureStore) GetItem(context.Context, string) (*domain.RightsCase, error) {
+func (s detailFailureStore) GetItem(context.Context, string) (*domain.RiskCase, error) {
 	return s.item, nil
 }
 
@@ -28,7 +28,7 @@ func (s detailFailureStore) GetAssignments(context.Context, string) ([]*domain.R
 func TestGetItemDetailPreservesRelatedReadErrors(t *testing.T) {
 	sentinel := errors.New("assignment index unavailable")
 	svc := NewQueryService(detailFailureStore{
-		item: &domain.RightsCase{ID: "case-1"},
+		item: &domain.RiskCase{ID: "case-1"},
 		err:  sentinel,
 	}, clock.NewMock())
 

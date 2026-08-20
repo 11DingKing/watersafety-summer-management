@@ -25,5 +25,5 @@ auth:
   store_path: ./data/auth.json
   session_ttl: 8h
   required: true
-  # On first startup, set CULTURECAMP_AUTH_BOOTSTRAP_USERS to a JSON array of
+  # On first startup, set WATERSAFETY_AUTH_BOOTSTRAP_USERS to a JSON array of
   # accounts. Passwords are hashed with bcrypt and are not stored in YAML.

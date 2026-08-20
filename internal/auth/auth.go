@@ -25,10 +25,10 @@ var (
 type Role string
 
 const (
-	RoleRider      Role = "rider"
-	RoleProsecutor Role = "prosecutor"
-	RoleCounselor  Role = "counselor"
-	RoleAdmin      Role = "admin"
+	RoleSchoolSafetyOfficer  Role = "school_safety_officer"
+	RoleWaterPatrolInspector Role = "water_patrol_inspector"
+	RoleEmergencyCoordinator Role = "emergency_coordinator"
+	RoleAdmin                Role = "admin"
 )
 
 type User struct {
@@ -102,7 +102,7 @@ func Open(path string, bootstrap ...BootstrapUser) (*Store, error) {
 
 func validRole(role Role) bool {
 	switch role {
-	case RoleRider, RoleProsecutor, RoleCounselor, RoleAdmin:
+	case RoleSchoolSafetyOfficer, RoleWaterPatrolInspector, RoleEmergencyCoordinator, RoleAdmin:
 		return true
 	default:
 		return false

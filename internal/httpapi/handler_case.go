@@ -7,8 +7,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"culturecamp/internal/domain"
-	"culturecamp/internal/service"
+	"watersafety/internal/domain"
+	"watersafety/internal/service"
 )
 
 func (s *Server) registerItem(w http.ResponseWriter, r *http.Request) {
@@ -153,7 +153,7 @@ func parseItemFilter(r *http.Request) domain.ItemFilter {
 	filter := domain.ItemFilter{
 		Status:         domain.ItemStatus(r.URL.Query().Get("status")),
 		LeadDepartment: r.URL.Query().Get("lead_department"),
-		WindowID:       r.URL.Query().Get("service_station_id"),
+		WaterAreaID:    r.URL.Query().Get("water_area_id"),
 		RegisteredBy:   r.URL.Query().Get("reported_by"),
 		PageSize:       parsePageSize(r),
 		PageOffset:     parsePageOffset(r),

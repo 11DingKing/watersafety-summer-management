@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS items (
     external_ref     TEXT UNIQUE NOT NULL,
     title            TEXT NOT NULL,
     description      TEXT NOT NULL DEFAULT '',
-    applicant_name   TEXT NOT NULL DEFAULT '',
-    applicant_contact TEXT NOT NULL DEFAULT '',
+    affected_person_name   TEXT NOT NULL DEFAULT '',
+    reporter_contact TEXT NOT NULL DEFAULT '',
     materials        TEXT NOT NULL DEFAULT '[]',
     category         TEXT NOT NULL DEFAULT '',
     keywords         TEXT NOT NULL DEFAULT '[]',
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS items (
     reported_by    TEXT NOT NULL DEFAULT '',
     deadline         TEXT NOT NULL,
     escalation_level INTEGER NOT NULL DEFAULT 0,
-    service_station_id        TEXT NOT NULL DEFAULT '',
+    water_area_id        TEXT NOT NULL DEFAULT '',
     completed_at     TEXT,
     cancelled_at     TEXT,
     cancel_reason    TEXT NOT NULL DEFAULT '',
@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS permanent_failures (
 
 CREATE TABLE IF NOT EXISTS import_batches (
     id            TEXT PRIMARY KEY,
-    service_station_id     TEXT NOT NULL,
+    water_area_id     TEXT NOT NULL,
     batch_date    TEXT NOT NULL,
     total_rows    INTEGER NOT NULL,
     success_count INTEGER NOT NULL,

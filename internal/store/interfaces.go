@@ -4,12 +4,12 @@ import (
 	"context"
 	"time"
 
-	"culturecamp/internal/domain"
+	"watersafety/internal/domain"
 )
 
 type Tx interface {
-	SaveItem(ctx context.Context, item *domain.RightsCase) error
-	UpdateItem(ctx context.Context, item *domain.RightsCase) error
+	SaveItem(ctx context.Context, item *domain.RiskCase) error
+	UpdateItem(ctx context.Context, item *domain.RiskCase) error
 	SaveAssignment(ctx context.Context, a *domain.Referral) error
 	MarkAssignmentSuperseded(ctx context.Context, itemID string) error
 	SaveEscalation(ctx context.Context, e *domain.Escalation) error
@@ -24,10 +24,10 @@ type Tx interface {
 type Store interface {
 	WithTx(ctx context.Context, fn func(Tx) error) error
 
-	GetItem(ctx context.Context, id string) (*domain.RightsCase, error)
-	GetItemByExternalRef(ctx context.Context, ref string) (*domain.RightsCase, error)
-	ListItems(ctx context.Context, filter domain.ItemFilter) ([]*domain.RightsCase, int, error)
-	FindOverdueItems(ctx context.Context, now time.Time, maxLevel int) ([]*domain.RightsCase, error)
+	GetItem(ctx context.Context, id string) (*domain.RiskCase, error)
+	GetItemByExternalRef(ctx context.Context, ref string) (*domain.RiskCase, error)
+	ListItems(ctx context.Context, filter domain.ItemFilter) ([]*domain.RiskCase, int, error)
+	FindOverdueItems(ctx context.Context, now time.Time, maxLevel int) ([]*domain.RiskCase, error)
 	CountByStatus(ctx context.Context) (map[domain.ItemStatus]int, error)
 
 	GetRule(ctx context.Context, version int) (*domain.Rule, error)

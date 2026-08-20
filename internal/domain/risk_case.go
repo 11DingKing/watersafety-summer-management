@@ -23,33 +23,33 @@ func (s ItemStatus) IsTerminal() bool {
 	return s == StatusCompleted || s == StatusCancelled
 }
 
-type RightsCase struct {
-	ID               string     `json:"id"`
-	ExternalRef      string     `json:"external_ref"`
-	Title            string     `json:"title"`
-	Description      string     `json:"description"`
-	ApplicantName    string     `json:"applicant_name"`
-	ApplicantContact string     `json:"applicant_contact"`
-	Materials        []string   `json:"materials"`
-	Category         string     `json:"category"`
-	Keywords         []string   `json:"keywords"`
-	Status           ItemStatus `json:"status"`
-	LeadDepartment   string     `json:"lead_department"`
-	CoDepartments    []string   `json:"co_departments"`
-	RuleVersion      int        `json:"rule_version"`
-	RegisteredAt     time.Time  `json:"registered_at"`
-	RegisteredBy     string     `json:"reported_by"`
-	Deadline         time.Time  `json:"deadline"`
-	EscalationLevel  int        `json:"escalation_level"`
-	WindowID         string     `json:"service_station_id"`
-	CompletedAt      *time.Time `json:"completed_at,omitempty"`
-	CancelledAt      *time.Time `json:"cancelled_at,omitempty"`
-	CancelReason     string     `json:"cancel_reason,omitempty"`
-	ShardPath        string     `json:"-"`
-	ShardOffset      int64      `json:"-"`
-	DataVersion      int        `json:"data_version"`
-	CreatedAt        time.Time  `json:"created_at"`
-	UpdatedAt        time.Time  `json:"updated_at"`
+type RiskCase struct {
+	ID                 string     `json:"id"`
+	ExternalRef        string     `json:"external_ref"`
+	Title              string     `json:"title"`
+	Description        string     `json:"description"`
+	AffectedPersonName string     `json:"affected_person_name"`
+	ReporterContact    string     `json:"reporter_contact"`
+	Materials          []string   `json:"materials"`
+	Category           string     `json:"category"`
+	Keywords           []string   `json:"keywords"`
+	Status             ItemStatus `json:"status"`
+	LeadDepartment     string     `json:"lead_department"`
+	CoDepartments      []string   `json:"co_departments"`
+	RuleVersion        int        `json:"rule_version"`
+	RegisteredAt       time.Time  `json:"registered_at"`
+	RegisteredBy       string     `json:"reported_by"`
+	Deadline           time.Time  `json:"deadline"`
+	EscalationLevel    int        `json:"escalation_level"`
+	WaterAreaID        string     `json:"water_area_id"`
+	CompletedAt        *time.Time `json:"completed_at,omitempty"`
+	CancelledAt        *time.Time `json:"cancelled_at,omitempty"`
+	CancelReason       string     `json:"cancel_reason,omitempty"`
+	ShardPath          string     `json:"-"`
+	ShardOffset        int64      `json:"-"`
+	DataVersion        int        `json:"data_version"`
+	CreatedAt          time.Time  `json:"created_at"`
+	UpdatedAt          time.Time  `json:"updated_at"`
 }
 
 var transitionTable = map[ItemStatus][]ItemStatus{
@@ -85,7 +85,7 @@ func ValidateTransition(from, to ItemStatus) error {
 	return nil
 }
 
-func (i *RightsCase) TransitionTo(to ItemStatus) error {
+func (i *RiskCase) TransitionTo(to ItemStatus) error {
 	if err := ValidateTransition(i.Status, to); err != nil {
 		return err
 	}
@@ -93,14 +93,14 @@ func (i *RightsCase) TransitionTo(to ItemStatus) error {
 	return nil
 }
 
-func (i *RightsCase) IsOverdue(now time.Time) bool {
+func (i *RiskCase) IsOverdue(now time.Time) bool {
 	if i.Status.IsTerminal() {
 		return false
 	}
 	return now.After(i.Deadline)
 }
 
-func (i *RightsCase) Validate() error {
+func (i *RiskCase) Validate() error {
 	if i.ExternalRef == "" {
 		return ValidationError{Field: "external_ref", Message: "must not be empty"}
 	}
@@ -119,7 +119,7 @@ func (i *RightsCase) Validate() error {
 type ItemFilter struct {
 	Status         ItemStatus
 	LeadDepartment string
-	WindowID       string
+	WaterAreaID    string
 	RegisteredBy   string
 	From           time.Time
 	To             time.Time

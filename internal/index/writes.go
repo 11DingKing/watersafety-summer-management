@@ -5,22 +5,22 @@ import (
 	"fmt"
 	"time"
 
-	"culturecamp/internal/domain"
+	"watersafety/internal/domain"
 )
 
-func (t *Tx) InsertItem(ctx context.Context, item *domain.RightsCase) error {
+func (t *Tx) InsertItem(ctx context.Context, item *domain.RiskCase) error {
 	_, err := t.tx.ExecContext(ctx, `INSERT INTO items (
-		id, external_ref, title, description, applicant_name, applicant_contact,
+		id, external_ref, title, description, affected_person_name, reporter_contact,
 		materials, category, keywords, status, lead_department, co_departments, rule_version,
-		registered_at, reported_by, deadline, escalation_level, service_station_id,
+		registered_at, reported_by, deadline, escalation_level, water_area_id,
 		completed_at, cancelled_at, cancel_reason, shard_path, shard_offset, data_version,
 		created_at, updated_at
 	) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 		item.ID, item.ExternalRef, item.Title, item.Description,
-		item.ApplicantName, item.ApplicantContact, encodeSlice(item.Materials),
+		item.AffectedPersonName, item.ReporterContact, encodeSlice(item.Materials),
 		item.Category, encodeSlice(item.Keywords), item.Status, item.LeadDepartment,
 		encodeSlice(item.CoDepartments), item.RuleVersion, formatTime(item.RegisteredAt),
-		item.RegisteredBy, formatTime(item.Deadline), item.EscalationLevel, item.WindowID,
+		item.RegisteredBy, formatTime(item.Deadline), item.EscalationLevel, item.WaterAreaID,
 		formatNullableTime(item.CompletedAt), formatNullableTime(item.CancelledAt),
 		item.CancelReason, item.ShardPath, item.ShardOffset, item.DataVersion,
 		formatTime(item.CreatedAt), formatTime(item.UpdatedAt),
@@ -31,19 +31,19 @@ func (t *Tx) InsertItem(ctx context.Context, item *domain.RightsCase) error {
 	return nil
 }
 
-func (t *Tx) UpdateItem(ctx context.Context, item *domain.RightsCase) error {
+func (t *Tx) UpdateItem(ctx context.Context, item *domain.RiskCase) error {
 	result, err := t.tx.ExecContext(ctx, `UPDATE items SET
-		title=?, description=?, applicant_name=?, applicant_contact=?,
+		title=?, description=?, affected_person_name=?, reporter_contact=?,
 		materials=?, category=?, keywords=?, status=?,
 		lead_department=?, co_departments=?, rule_version=?,
-		deadline=?, escalation_level=?, service_station_id=?,
+		deadline=?, escalation_level=?, water_area_id=?,
 		completed_at=?, cancelled_at=?, cancel_reason=?,
 		data_version=?, updated_at=? WHERE id=?`,
-		item.Title, item.Description, item.ApplicantName, item.ApplicantContact,
+		item.Title, item.Description, item.AffectedPersonName, item.ReporterContact,
 		encodeSlice(item.Materials), item.Category, encodeSlice(item.Keywords),
 		item.Status, item.LeadDepartment, encodeSlice(item.CoDepartments),
 		item.RuleVersion, formatTime(item.Deadline), item.EscalationLevel,
-		item.WindowID, formatNullableTime(item.CompletedAt),
+		item.WaterAreaID, formatNullableTime(item.CompletedAt),
 		formatNullableTime(item.CancelledAt), item.CancelReason,
 		item.DataVersion, formatTime(item.UpdatedAt), item.ID,
 	)
@@ -173,10 +173,10 @@ func (t *Tx) MarkFailureResolved(ctx context.Context, id string, at time.Time) e
 
 func (t *Tx) InsertBatch(ctx context.Context, b *domain.ImportBatch) error {
 	_, err := t.tx.ExecContext(ctx, `INSERT INTO import_batches (
-		id, service_station_id, batch_date, total_rows, success_count, failure_count,
+		id, water_area_id, batch_date, total_rows, success_count, failure_count,
 		imported_at, shard_path, data_version
 	) VALUES (?,?,?,?,?,?,?,?,?)`,
-		b.ID, b.WindowID, formatTime(b.BatchDate), b.TotalRows,
+		b.ID, b.WaterAreaID, formatTime(b.BatchDate), b.TotalRows,
 		b.SuccessCount, b.FailureCount, formatTime(b.ImportedAt),
 		b.ShardPath, b.DataVersion,
 	)

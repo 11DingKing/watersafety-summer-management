@@ -16,16 +16,16 @@ fmt:
 	go fmt ./...
 
 run-service:
-	go run ./cmd/culturecamp
+	go run ./cmd/watersafety
 
 run-tool:
 	go run ./cmd/culturectl
 
 docker-build:
-	./build_eval_docker.sh culturecamp-eval linux/amd64
+	./build_eval_docker.sh watersafety-eval linux/amd64
 
 docker-build-arm:
-	./build_eval_docker.sh culturecamp-eval linux/arm64
+	./build_eval_docker.sh watersafety-eval linux/arm64
 
 tidy:
 	go mod tidy

@@ -8,10 +8,10 @@ import (
 
 	"github.com/google/uuid"
 
-	"culturecamp/internal/auditlog"
-	"culturecamp/internal/dispatch"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/store"
+	"watersafety/internal/auditlog"
+	"watersafety/internal/dispatch"
+	"watersafety/internal/domain"
+	"watersafety/internal/store"
 )
 
 type ItemService struct {
@@ -26,30 +26,30 @@ func NewItemService(s store.Store, adj *dispatch.Adjudicator, clock domain.Clock
 }
 
 type RegisterItemRequest struct {
-	ExternalRef      string   `json:"external_ref"`
-	Title            string   `json:"title"`
-	Description      string   `json:"description"`
-	ApplicantName    string   `json:"applicant_name"`
-	ApplicantContact string   `json:"applicant_contact"`
-	Materials        []string `json:"materials"`
-	Category         string   `json:"category"`
-	Keywords         []string `json:"keywords"`
-	RegisteredBy     string   `json:"reported_by"`
-	WindowID         string   `json:"service_station_id"`
+	ExternalRef        string   `json:"external_ref"`
+	Title              string   `json:"title"`
+	Description        string   `json:"description"`
+	AffectedPersonName string   `json:"affected_person_name"`
+	ReporterContact    string   `json:"reporter_contact"`
+	Materials          []string `json:"materials"`
+	Category           string   `json:"category"`
+	Keywords           []string `json:"keywords"`
+	RegisteredBy       string   `json:"reported_by"`
+	WaterAreaID        string   `json:"water_area_id"`
 }
 
 type ModifyItemRequest struct {
-	Title            string   `json:"title"`
-	Description      string   `json:"description"`
-	ApplicantName    string   `json:"applicant_name"`
-	ApplicantContact string   `json:"applicant_contact"`
-	Materials        []string `json:"materials"`
-	Category         string   `json:"category"`
-	Keywords         []string `json:"keywords"`
-	Actor            string   `json:"actor"`
+	Title              string   `json:"title"`
+	Description        string   `json:"description"`
+	AffectedPersonName string   `json:"affected_person_name"`
+	ReporterContact    string   `json:"reporter_contact"`
+	Materials          []string `json:"materials"`
+	Category           string   `json:"category"`
+	Keywords           []string `json:"keywords"`
+	Actor              string   `json:"actor"`
 }
 
-func (s *ItemService) Register(ctx context.Context, req RegisterItemRequest) (*domain.RightsCase, error) {
+func (s *ItemService) Register(ctx context.Context, req RegisterItemRequest) (*domain.RiskCase, error) {
 	if req.ExternalRef == "" {
 		return nil, fmt.Errorf("external_ref empty: %w", domain.ErrValidation)
 	}
@@ -74,24 +74,24 @@ func (s *ItemService) Register(ctx context.Context, req RegisterItemRequest) (*d
 		return nil, fmt.Errorf("get active rules: %w", err)
 	}
 
-	item := &domain.RightsCase{
-		ID:               uuid.NewString(),
-		ExternalRef:      req.ExternalRef,
-		Title:            req.Title,
-		Description:      req.Description,
-		ApplicantName:    req.ApplicantName,
-		ApplicantContact: req.ApplicantContact,
-		Materials:        req.Materials,
-		Category:         req.Category,
-		Keywords:         req.Keywords,
-		Status:           domain.StatusRegistered,
-		RegisteredAt:     now,
-		RegisteredBy:     req.RegisteredBy,
-		Deadline:         now.Add(s.deadline),
-		WindowID:         req.WindowID,
-		DataVersion:      domain.DataVersion,
-		CreatedAt:        now,
-		UpdatedAt:        now,
+	item := &domain.RiskCase{
+		ID:                 uuid.NewString(),
+		ExternalRef:        req.ExternalRef,
+		Title:              req.Title,
+		Description:        req.Description,
+		AffectedPersonName: req.AffectedPersonName,
+		ReporterContact:    req.ReporterContact,
+		Materials:          req.Materials,
+		Category:           req.Category,
+		Keywords:           req.Keywords,
+		Status:             domain.StatusRegistered,
+		RegisteredAt:       now,
+		RegisteredBy:       req.RegisteredBy,
+		Deadline:           now.Add(s.deadline),
+		WaterAreaID:        req.WaterAreaID,
+		DataVersion:        domain.DataVersion,
+		CreatedAt:          now,
+		UpdatedAt:          now,
 	}
 
 	referral, err := s.adjudicator.Adjudicate(ctx, item, rules)
@@ -122,7 +122,7 @@ func (s *ItemService) Register(ctx context.Context, req RegisterItemRequest) (*d
 	return item, nil
 }
 
-func (s *ItemService) StartProcessing(ctx context.Context, id, actor string) (*domain.RightsCase, error) {
+func (s *ItemService) StartProcessing(ctx context.Context, id, actor string) (*domain.RiskCase, error) {
 	item, err := s.store.GetItem(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("get item: %w", err)
@@ -138,7 +138,7 @@ func (s *ItemService) StartProcessing(ctx context.Context, id, actor string) (*d
 	return item, nil
 }
 
-func (s *ItemService) Modify(ctx context.Context, id string, req ModifyItemRequest) (*domain.RightsCase, error) {
+func (s *ItemService) Modify(ctx context.Context, id string, req ModifyItemRequest) (*domain.RiskCase, error) {
 	item, err := s.store.GetItem(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("get item: %w", err)
@@ -152,11 +152,11 @@ func (s *ItemService) Modify(ctx context.Context, id string, req ModifyItemReque
 	if req.Description != "" {
 		item.Description = req.Description
 	}
-	if req.ApplicantName != "" {
-		item.ApplicantName = req.ApplicantName
+	if req.AffectedPersonName != "" {
+		item.AffectedPersonName = req.AffectedPersonName
 	}
-	if req.ApplicantContact != "" {
-		item.ApplicantContact = req.ApplicantContact
+	if req.ReporterContact != "" {
+		item.ReporterContact = req.ReporterContact
 	}
 	if req.Materials != nil {
 		item.Materials = req.Materials
@@ -174,7 +174,7 @@ func (s *ItemService) Modify(ctx context.Context, id string, req ModifyItemReque
 	return item, nil
 }
 
-func (s *ItemService) ReturnForCorrection(ctx context.Context, id, reason, actor string) (*domain.RightsCase, error) {
+func (s *ItemService) ReturnForCorrection(ctx context.Context, id, reason, actor string) (*domain.RiskCase, error) {
 	item, err := s.store.GetItem(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("get item: %w", err)
@@ -190,7 +190,7 @@ func (s *ItemService) ReturnForCorrection(ctx context.Context, id, reason, actor
 	return item, nil
 }
 
-func (s *ItemService) Resubmit(ctx context.Context, id, actor string) (*domain.RightsCase, error) {
+func (s *ItemService) Resubmit(ctx context.Context, id, actor string) (*domain.RiskCase, error) {
 	item, err := s.store.GetItem(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("get item: %w", err)
@@ -208,7 +208,7 @@ func (s *ItemService) Resubmit(ctx context.Context, id, actor string) (*domain.R
 	return item, nil
 }
 
-func (s *ItemService) Cancel(ctx context.Context, id, reason, actor string) (*domain.RightsCase, error) {
+func (s *ItemService) Cancel(ctx context.Context, id, reason, actor string) (*domain.RiskCase, error) {
 	item, err := s.store.GetItem(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("get item: %w", err)
@@ -226,7 +226,7 @@ func (s *ItemService) Cancel(ctx context.Context, id, reason, actor string) (*do
 	return item, nil
 }
 
-func (s *ItemService) Complete(ctx context.Context, id, actor string) (*domain.RightsCase, error) {
+func (s *ItemService) Complete(ctx context.Context, id, actor string) (*domain.RiskCase, error) {
 	item, err := s.store.GetItem(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("get item: %w", err)
@@ -243,7 +243,7 @@ func (s *ItemService) Complete(ctx context.Context, id, actor string) (*domain.R
 	return item, nil
 }
 
-func (s *ItemService) updateItemWithAudit(ctx context.Context, item *domain.RightsCase, actor, action, details string) error {
+func (s *ItemService) updateItemWithAudit(ctx context.Context, item *domain.RiskCase, actor, action, details string) error {
 	now := s.clock.Now()
 	if err := s.store.WithTx(ctx, func(tx store.Tx) error {
 		if err := tx.UpdateItem(ctx, item); err != nil {

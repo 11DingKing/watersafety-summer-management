@@ -10,15 +10,15 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"culturecamp/internal/applog"
-	"culturecamp/internal/config"
-	"culturecamp/internal/httpapi"
-	"culturecamp/internal/repo"
-	"culturecamp/internal/scheduler"
+	"watersafety/internal/applog"
+	"watersafety/internal/config"
+	"watersafety/internal/httpapi"
+	"watersafety/internal/repo"
+	"watersafety/internal/scheduler"
 )
 
 func main() {
-	configPath := os.Getenv("CULTURECAMP_CONFIG")
+	configPath := os.Getenv("WATERSAFETY_CONFIG")
 	if len(os.Args) > 1 {
 		configPath = os.Args[1]
 	}

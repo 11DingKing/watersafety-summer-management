@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"culturecamp/internal/auditlog"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/store"
+	"watersafety/internal/auditlog"
+	"watersafety/internal/domain"
+	"watersafety/internal/store"
 )
 
 // ErrRuleReeval is a sentinel wrapped into every worker-originated error so
@@ -62,8 +62,8 @@ func (w *ReevalWorker) sweep(ctx context.Context) error {
 
 // collectStaleItems pages through re-evaluable items and keeps those whose
 // rule version is older than the current one.
-func (w *ReevalWorker) collectStaleItems(ctx context.Context, currentVersion int) ([]*domain.RightsCase, error) {
-	var stale []*domain.RightsCase
+func (w *ReevalWorker) collectStaleItems(ctx context.Context, currentVersion int) ([]*domain.RiskCase, error) {
+	var stale []*domain.RiskCase
 	for _, status := range reevaluableStatuses {
 		offset := 0
 		for {
@@ -92,7 +92,7 @@ func (w *ReevalWorker) collectStaleItems(ctx context.Context, currentVersion int
 // reevaluateItem re-routes a single item under the active rules inside one
 // transaction. It is idempotent: if the item has already been moved to the
 // current version (by a prior cycle or another path) it is a no-op.
-func (w *ReevalWorker) reevaluateItem(ctx context.Context, item *domain.RightsCase, rules []*domain.Rule, currentVersion int) error {
+func (w *ReevalWorker) reevaluateItem(ctx context.Context, item *domain.RiskCase, rules []*domain.Rule, currentVersion int) error {
 	fresh, err := w.store.GetItem(ctx, item.ID)
 	if err != nil {
 		return fmt.Errorf("reload item %s: %w", item.ID, err)

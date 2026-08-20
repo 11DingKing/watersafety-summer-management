@@ -10,14 +10,14 @@ import (
 	"strings"
 	"time"
 
-	"culturecamp/internal/domain"
-	"culturecamp/internal/index"
-	"culturecamp/internal/shard"
-	"culturecamp/internal/store"
+	"watersafety/internal/domain"
+	"watersafety/internal/index"
+	"watersafety/internal/shard"
+	"watersafety/internal/store"
 )
 
 type recordCollector struct {
-	itemsByID       map[string]*domain.RightsCase
+	itemsByID       map[string]*domain.RiskCase
 	rulesByVersion  map[int]*domain.Rule
 	assignmentsByID map[string]*domain.Referral
 	escalationsByID map[string]*domain.Escalation
@@ -28,7 +28,7 @@ type recordCollector struct {
 
 func newCollector() *recordCollector {
 	return &recordCollector{
-		itemsByID:       map[string]*domain.RightsCase{},
+		itemsByID:       map[string]*domain.RiskCase{},
 		rulesByVersion:  map[int]*domain.Rule{},
 		assignmentsByID: map[string]*domain.Referral{},
 		escalationsByID: map[string]*domain.Escalation{},
@@ -41,7 +41,7 @@ func newCollector() *recordCollector {
 func (c *recordCollector) add(entityType string, data []byte) error {
 	switch entityType {
 	case "items":
-		var item domain.RightsCase
+		var item domain.RiskCase
 		if err := json.Unmarshal(data, &item); err != nil {
 			return err
 		}

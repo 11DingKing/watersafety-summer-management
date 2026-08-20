@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"culturecamp/internal/domain"
+	"watersafety/internal/domain"
 )
 
 type Location struct {

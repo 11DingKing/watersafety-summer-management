@@ -14,8 +14,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"culturecamp/internal/domain"
-	"culturecamp/internal/store"
+	"watersafety/internal/domain"
+	"watersafety/internal/store"
 )
 
 func newTestStore(t *testing.T, dir string, clk clock.Clock) *Store {
@@ -26,11 +26,11 @@ func newTestStore(t *testing.T, dir string, clk clock.Clock) *Store {
 	return st
 }
 
-func makeItem(id, ref string, now time.Time) *domain.RightsCase {
-	return &domain.RightsCase{
+func makeItem(id, ref string, now time.Time) *domain.RiskCase {
+	return &domain.RiskCase{
 		ID:             id,
 		ExternalRef:    ref,
-		Title:          "RightsCase " + id,
+		Title:          "RiskCase " + id,
 		Status:         domain.StatusAdjudicated,
 		LeadDepartment: "test-dept",
 		RegisteredAt:   now,
@@ -42,7 +42,7 @@ func makeItem(id, ref string, now time.Time) *domain.RightsCase {
 	}
 }
 
-func saveItemWithAssignment(t *testing.T, ctx context.Context, st *Store, item *domain.RightsCase) {
+func saveItemWithAssignment(t *testing.T, ctx context.Context, st *Store, item *domain.RiskCase) {
 	t.Helper()
 	now := item.RegisteredAt
 	asg := &domain.Referral{
@@ -91,7 +91,7 @@ func TestRepo_PersistAndRecoverRestart(t *testing.T) {
 
 	loaded, err := st2.GetItem(ctx, "restart-1")
 	require.NoError(t, err)
-	assert.Equal(t, "RightsCase restart-1", loaded.Title)
+	assert.Equal(t, "RiskCase restart-1", loaded.Title)
 	assert.Equal(t, domain.StatusAdjudicated, loaded.Status)
 
 	asgs, err := st2.GetAssignments(ctx, "restart-1")
@@ -115,7 +115,7 @@ func TestRepo_TransactionCommitRollback(t *testing.T) {
 
 	loaded, err := st.GetItem(ctx, "commit-1")
 	require.NoError(t, err)
-	assert.Equal(t, "RightsCase commit-1", loaded.Title)
+	assert.Equal(t, "RiskCase commit-1", loaded.Title)
 
 	rolledBack := makeItem("rollback-1", "REF-ROLLBACK-1", now)
 	err = st.WithTx(ctx, func(tx store.Tx) error {
@@ -154,7 +154,7 @@ func TestRepo_ConcurrentRaceParallel(t *testing.T) {
 	for i := 0; i < n; i++ {
 		item, err := st.GetItem(ctx, fmt.Sprintf("race-%d", i))
 		require.NoError(t, err, "item %d should exist", i)
-		assert.Equal(t, fmt.Sprintf("RightsCase race-%d", i), item.Title)
+		assert.Equal(t, fmt.Sprintf("RiskCase race-%d", i), item.Title)
 	}
 
 	_, count, _ := st.ListItems(ctx, domain.ItemFilter{PageSize: 200})
@@ -184,7 +184,7 @@ func TestRepo_RebuildIndexReplay(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		item, err := st2.GetItem(ctx, fmt.Sprintf("rebuild-%d", i))
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("RightsCase rebuild-%d", i), item.Title)
+		assert.Equal(t, fmt.Sprintf("RiskCase rebuild-%d", i), item.Title)
 	}
 }
 

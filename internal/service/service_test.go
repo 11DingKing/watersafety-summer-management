@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"culturecamp/internal/dispatch"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/repo"
-	"culturecamp/internal/service"
+	"watersafety/internal/dispatch"
+	"watersafety/internal/domain"
+	"watersafety/internal/repo"
+	"watersafety/internal/service"
 )
 
 func setupService(t *testing.T) (*service.ItemService, *service.EscalationService,
@@ -46,7 +46,7 @@ func TestItemService_Register(t *testing.T) {
 
 	item, err := itemSvc.Register(ctx, service.RegisterItemRequest{
 		ExternalRef:  "REF-001",
-		Title:        "Test RightsCase",
+		Title:        "Test RiskCase",
 		RegisteredBy: "user1",
 	})
 	require.NoError(t, err)

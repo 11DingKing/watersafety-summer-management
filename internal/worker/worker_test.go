@@ -12,13 +12,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"culturecamp/internal/applog"
-	"culturecamp/internal/auditlog"
-	"culturecamp/internal/config"
-	"culturecamp/internal/dispatch"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/repo"
-	"culturecamp/internal/service"
+	"watersafety/internal/applog"
+	"watersafety/internal/auditlog"
+	"watersafety/internal/config"
+	"watersafety/internal/dispatch"
+	"watersafety/internal/domain"
+	"watersafety/internal/repo"
+	"watersafety/internal/service"
 )
 
 type fakeTicker struct{ ch chan time.Time }
@@ -66,7 +66,7 @@ func TestWorker_RuleVersionEvolutionReeval(t *testing.T) {
 
 	item, err := itemSvc.Register(ctx, service.RegisterItemRequest{
 		ExternalRef:  "REF-REEVAL-001",
-		Title:        "Reeval RightsCase",
+		Title:        "Reeval RiskCase",
 		RegisteredBy: "u1",
 	})
 	require.NoError(t, err)
@@ -124,7 +124,7 @@ func TestWorker_RestartRecoverReplayPersist(t *testing.T) {
 	require.NoError(t, err)
 	itemSvc := service.NewItemService(st, dispatch.NewAdjudicator(clk), clk, 72*time.Hour)
 	item, err := itemSvc.Register(ctx, service.RegisterItemRequest{
-		ExternalRef: "REF-RESTART", Title: "Restart RightsCase", RegisteredBy: "u1",
+		ExternalRef: "REF-RESTART", Title: "Restart RiskCase", RegisteredBy: "u1",
 	})
 	require.NoError(t, err)
 	_, err = ruleSvc.CreateRule(ctx, service.CreateRuleRequest{

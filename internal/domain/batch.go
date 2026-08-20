@@ -4,7 +4,7 @@ import "time"
 
 type ImportBatch struct {
 	ID           string    `json:"id"`
-	WindowID     string    `json:"service_station_id"`
+	WaterAreaID  string    `json:"water_area_id"`
 	BatchDate    time.Time `json:"batch_date"`
 	TotalRows    int       `json:"total_rows"`
 	SuccessCount int       `json:"success_count"`
@@ -31,9 +31,9 @@ type BatchImportResult struct {
 }
 
 type BatchFilter struct {
-	WindowID   string
-	From       time.Time
-	To         time.Time
-	PageSize   int
-	PageOffset int
+	WaterAreaID string
+	From        time.Time
+	To          time.Time
+	PageSize    int
+	PageOffset  int
 }

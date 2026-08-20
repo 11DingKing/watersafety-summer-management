@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"culturecamp/internal/auth"
+	"watersafety/internal/auth"
 )
 
 type loginRequest struct {

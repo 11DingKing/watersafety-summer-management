@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"culturecamp/internal/auditlog"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/store"
+	"watersafety/internal/auditlog"
+	"watersafety/internal/domain"
+	"watersafety/internal/store"
 )
 
 type RuleService struct {

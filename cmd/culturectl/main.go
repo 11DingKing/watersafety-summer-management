@@ -10,11 +10,11 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"culturecamp/internal/applog"
-	"culturecamp/internal/config"
-	"culturecamp/internal/dispatch"
-	"culturecamp/internal/repo"
-	"culturecamp/internal/service"
+	"watersafety/internal/applog"
+	"watersafety/internal/config"
+	"watersafety/internal/dispatch"
+	"watersafety/internal/repo"
+	"watersafety/internal/service"
 )
 
 func main() {

@@ -18,16 +18,16 @@ The directory contains:
 ```bash
 go build ./...
 go vet ./...
-go run ./cmd/culturecamp        # start HTTP service
+go run ./cmd/watersafety        # start HTTP service
 go run ./cmd/culturectl init --data-dir ./data   # initialise storage
 go test ./...
 ```
 
 ## Running the Service (port 49660)
 ```bash
-export CULTURECAMP_SERVER_PORT=49660
-export CULTURECAMP_STORAGE_DATA_DIR=./data
-go run ./cmd/culturecamp
+export WATERSAFETY_SERVER_PORT=49660
+export WATERSAFETY_STORAGE_DATA_DIR=./data
+go run ./cmd/watersafety
 # Health:   curl http://localhost:49660/healthz
 # Readiness: curl http://localhost:49660/readyz
 ```
@@ -44,6 +44,6 @@ go run ./cmd/culturectl diagnose  --data-dir ./data
 
 ## Docker Builds
 ```bash
-./build_eval_docker.sh culturecamp-eval linux/amd64
-./build_eval_docker.sh culturecamp-eval linux/arm64
+./build_eval_docker.sh watersafety-eval linux/amd64
+./build_eval_docker.sh watersafety-eval linux/arm64
 ```

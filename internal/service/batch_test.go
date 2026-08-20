@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"culturecamp/internal/domain"
-	"culturecamp/internal/service"
+	"watersafety/internal/domain"
+	"watersafety/internal/service"
 )
 
 func TestBatchImport_RowLevelResults(t *testing.T) {
@@ -15,7 +15,7 @@ func TestBatchImport_RowLevelResults(t *testing.T) {
 
 	result, err := batchSvc.Import(ctx, batchReq("service_station-1",
 		[]string{"REF-BATCH-1", "REF-BATCH-2"},
-		[]string{"Batch RightsCase 1", "Batch RightsCase 2"},
+		[]string{"Batch RiskCase 1", "Batch RiskCase 2"},
 	))
 	require.NoError(t, err)
 	assert.Equal(t, 2, result.TotalRows)
@@ -28,7 +28,7 @@ func TestBatchImport_DuplicateIdempotentRetry(t *testing.T) {
 
 	result, err := batchSvc.Import(ctx, batchReq("service_station-1",
 		[]string{"REF-DUP-1", "REF-DUP-2", "REF-DUP-1"},
-		[]string{"RightsCase 1", "RightsCase 2", "Duplicate of 1"},
+		[]string{"RiskCase 1", "RiskCase 2", "Duplicate of 1"},
 	))
 	require.NoError(t, err)
 	assert.Equal(t, 3, result.TotalRows)
@@ -51,11 +51,11 @@ func TestBatchImport_FailureRowsDoNotAffectSuccess(t *testing.T) {
 	_, _, batchSvc, _, st, _, ctx := setupService(t)
 
 	result, err := batchSvc.Import(ctx, service.BatchImportRequest{
-		WindowID: "service_station-2",
+		WaterAreaID: "service_station-2",
 		Items: []service.RegisterItemRequest{
-			{ExternalRef: "REF-OK-1", Title: "OK RightsCase 1", RegisteredBy: "user1"},
+			{ExternalRef: "REF-OK-1", Title: "OK RiskCase 1", RegisteredBy: "user1"},
 			{ExternalRef: "", Title: "Invalid - no ref", RegisteredBy: "user1"},
-			{ExternalRef: "REF-OK-2", Title: "OK RightsCase 2", RegisteredBy: "user1"},
+			{ExternalRef: "REF-OK-2", Title: "OK RiskCase 2", RegisteredBy: "user1"},
 		},
 	})
 	require.NoError(t, err)
@@ -92,7 +92,7 @@ func batchReq(service_station string, refs, titles []string) service.BatchImport
 			RegisteredBy: "user1",
 		}
 	}
-	return service.BatchImportRequest{WindowID: service_station, Items: items}
+	return service.BatchImportRequest{WaterAreaID: service_station, Items: items}
 }
 
 func registerReq(ref, title string) service.RegisterItemRequest {

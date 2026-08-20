@@ -9,8 +9,8 @@ import (
 
 	"github.com/go-chi/chi/v5/middleware"
 
-	"culturecamp/internal/applog"
-	"culturecamp/internal/auth"
+	"watersafety/internal/applog"
+	"watersafety/internal/auth"
 )
 
 type authContextKey struct{}

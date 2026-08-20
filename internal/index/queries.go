@@ -7,22 +7,22 @@ import (
 	"strings"
 	"time"
 
-	"culturecamp/internal/domain"
+	"watersafety/internal/domain"
 )
 
 type scanner interface {
 	Scan(dest ...interface{}) error
 }
 
-const itemCols = `id, external_ref, title, description, applicant_name, applicant_contact,
+const itemCols = `id, external_ref, title, description, affected_person_name, reporter_contact,
 	materials, category, keywords, status, lead_department, co_departments, rule_version,
-	registered_at, reported_by, deadline, escalation_level, service_station_id,
+	registered_at, reported_by, deadline, escalation_level, water_area_id,
 	completed_at, cancelled_at, cancel_reason, shard_path, shard_offset, data_version,
 	created_at, updated_at`
 
-func scanItem(row scanner) (*domain.RightsCase, error) {
+func scanItem(row scanner) (*domain.RiskCase, error) {
 	var (
-		item        domain.RightsCase
+		item        domain.RiskCase
 		matJSON     string
 		kwJSON      string
 		coJSON      string
@@ -35,10 +35,10 @@ func scanItem(row scanner) (*domain.RightsCase, error) {
 	)
 	err := row.Scan(
 		&item.ID, &item.ExternalRef, &item.Title, &item.Description,
-		&item.ApplicantName, &item.ApplicantContact, &matJSON,
+		&item.AffectedPersonName, &item.ReporterContact, &matJSON,
 		&item.Category, &kwJSON, &item.Status, &item.LeadDepartment,
 		&coJSON, &item.RuleVersion, &regAt, &item.RegisteredBy,
-		&deadline, &item.EscalationLevel, &item.WindowID,
+		&deadline, &item.EscalationLevel, &item.WaterAreaID,
 		&completedAt, &cancelledAt, &item.CancelReason,
 		&item.ShardPath, &item.ShardOffset, &item.DataVersion,
 		&createdAt, &updatedAt,
@@ -216,7 +216,7 @@ func scanFailure(row scanner) (*domain.PermanentFailure, error) {
 	return &f, nil
 }
 
-const batchCols = `id, service_station_id, batch_date, total_rows, success_count, failure_count,
+const batchCols = `id, water_area_id, batch_date, total_rows, success_count, failure_count,
 	imported_at, shard_path, data_version`
 
 func scanBatch(row scanner) (*domain.ImportBatch, error) {
@@ -226,7 +226,7 @@ func scanBatch(row scanner) (*domain.ImportBatch, error) {
 		impAt string
 	)
 	err := row.Scan(
-		&b.ID, &b.WindowID, &bd, &b.TotalRows, &b.SuccessCount,
+		&b.ID, &b.WaterAreaID, &bd, &b.TotalRows, &b.SuccessCount,
 		&b.FailureCount, &impAt, &b.ShardPath, &b.DataVersion,
 	)
 	if err != nil {
@@ -241,7 +241,7 @@ func scanBatch(row scanner) (*domain.ImportBatch, error) {
 	return &b, nil
 }
 
-func (i *Index) GetItemByID(ctx context.Context, id string) (*domain.RightsCase, error) {
+func (i *Index) GetItemByID(ctx context.Context, id string) (*domain.RiskCase, error) {
 	row := i.db.QueryRowContext(ctx, "SELECT "+itemCols+" FROM items WHERE id = ?", id)
 	item, err := scanItem(row)
 	if err != nil {
@@ -253,7 +253,7 @@ func (i *Index) GetItemByID(ctx context.Context, id string) (*domain.RightsCase,
 	return item, nil
 }
 
-func (i *Index) GetItemByExternalRef(ctx context.Context, ref string) (*domain.RightsCase, error) {
+func (i *Index) GetItemByExternalRef(ctx context.Context, ref string) (*domain.RiskCase, error) {
 	row := i.db.QueryRowContext(ctx, "SELECT "+itemCols+" FROM items WHERE external_ref = ?", ref)
 	item, err := scanItem(row)
 	if err != nil {
@@ -265,7 +265,7 @@ func (i *Index) GetItemByExternalRef(ctx context.Context, ref string) (*domain.R
 	return item, nil
 }
 
-func (i *Index) ListItems(ctx context.Context, filter domain.ItemFilter) ([]*domain.RightsCase, int, error) {
+func (i *Index) ListItems(ctx context.Context, filter domain.ItemFilter) ([]*domain.RiskCase, int, error) {
 	where := []string{"1=1"}
 	args := []interface{}{}
 	if filter.Status != "" {
@@ -276,9 +276,9 @@ func (i *Index) ListItems(ctx context.Context, filter domain.ItemFilter) ([]*dom
 		where = append(where, "lead_department = ?")
 		args = append(args, filter.LeadDepartment)
 	}
-	if filter.WindowID != "" {
-		where = append(where, "service_station_id = ?")
-		args = append(args, filter.WindowID)
+	if filter.WaterAreaID != "" {
+		where = append(where, "water_area_id = ?")
+		args = append(args, filter.WaterAreaID)
 	}
 	if filter.RegisteredBy != "" {
 		where = append(where, "reported_by = ?")
@@ -329,7 +329,7 @@ func (i *Index) ListItems(ctx context.Context, filter domain.ItemFilter) ([]*dom
 	}
 	defer rows.Close()
 
-	var items []*domain.RightsCase
+	var items []*domain.RiskCase
 	for rows.Next() {
 		item, err := scanItem(rows)
 		if err != nil {
@@ -340,14 +340,14 @@ func (i *Index) ListItems(ctx context.Context, filter domain.ItemFilter) ([]*dom
 	return items, total, rows.Err()
 }
 
-func (i *Index) FindOverdueItems(ctx context.Context, now time.Time, maxLevel int) ([]*domain.RightsCase, error) {
+func (i *Index) FindOverdueItems(ctx context.Context, now time.Time, maxLevel int) ([]*domain.RiskCase, error) {
 	query := "SELECT " + itemCols + " FROM items WHERE status NOT IN ('completed','cancelled') AND deadline < ? AND escalation_level < ? ORDER BY deadline ASC"
 	rows, err := i.db.QueryContext(ctx, query, formatTime(now), maxLevel)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []*domain.RightsCase
+	var items []*domain.RiskCase
 	for rows.Next() {
 		item, err := scanItem(rows)
 		if err != nil {
@@ -559,9 +559,9 @@ func (i *Index) GetFailureByID(ctx context.Context, id string) (*domain.Permanen
 func (i *Index) ListBatches(ctx context.Context, filter domain.BatchFilter) ([]*domain.ImportBatch, int, error) {
 	where := []string{"1=1"}
 	args := []interface{}{}
-	if filter.WindowID != "" {
-		where = append(where, "service_station_id = ?")
-		args = append(args, filter.WindowID)
+	if filter.WaterAreaID != "" {
+		where = append(where, "water_area_id = ?")
+		args = append(args, filter.WaterAreaID)
 	}
 	if !filter.From.IsZero() {
 		where = append(where, "batch_date >= ?")

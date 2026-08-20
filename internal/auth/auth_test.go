@@ -16,11 +16,11 @@ func TestLoginExpiryAndLogoutRevocationPersist(t *testing.T) {
 		t.Fatal(err)
 	}
 	now := time.Date(2026, 8, 19, 12, 0, 0, 0, time.UTC)
-	user, token, expires, err := st.Login("prosecutor", "test-prosecutor-password", time.Hour, now)
+	user, token, expires, err := st.Login("water_patrol_inspector", "test-patrol-password", time.Hour, now)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if user.Role != RoleProsecutor || !expires.Equal(now.Add(time.Hour)) {
+	if user.Role != RoleWaterPatrolInspector || !expires.Equal(now.Add(time.Hour)) {
 		t.Fatalf("unexpected login result: %+v %s", user, expires)
 	}
 	encoded, err := json.Marshal(user)
@@ -54,14 +54,14 @@ func TestExpiredSessionAndRoleGuard(t *testing.T) {
 		t.Fatal(err)
 	}
 	now := time.Date(2026, 8, 19, 12, 0, 0, 0, time.UTC)
-	user, token, _, err := st.Login("counselor", "test-counselor-password", time.Minute, now)
+	user, token, _, err := st.Login("emergency_coordinator", "test-emergency-password", time.Minute, now)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if _, err := st.Resolve(token, now.Add(2*time.Minute)); !errors.Is(err, ErrSessionExpired) {
 		t.Fatalf("expected expiry, got %v", err)
 	}
-	if err := RequireRole(user, RoleProsecutor); !errors.Is(err, ErrForbidden) {
+	if err := RequireRole(user, RoleWaterPatrolInspector); !errors.Is(err, ErrForbidden) {
 		t.Fatalf("expected forbidden, got %v", err)
 	}
 }
@@ -69,7 +69,7 @@ func TestExpiredSessionAndRoleGuard(t *testing.T) {
 func testUsers() []BootstrapUser {
 	return []BootstrapUser{
 		{ID: "u-admin", Username: "admin", Password: "test-admin-password", Role: RoleAdmin},
-		{ID: "u-prosecutor", Username: "prosecutor", Password: "test-prosecutor-password", Role: RoleProsecutor},
-		{ID: "u-counselor", Username: "counselor", Password: "test-counselor-password", Role: RoleCounselor},
+		{ID: "u-patrol", Username: "water_patrol_inspector", Password: "test-patrol-password", Role: RoleWaterPatrolInspector},
+		{ID: "u-emergency", Username: "emergency_coordinator", Password: "test-emergency-password", Role: RoleEmergencyCoordinator},
 	}
 }

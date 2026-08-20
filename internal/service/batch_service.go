@@ -7,9 +7,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"culturecamp/internal/auditlog"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/store"
+	"watersafety/internal/auditlog"
+	"watersafety/internal/domain"
+	"watersafety/internal/store"
 )
 
 type BatchService struct {
@@ -23,8 +23,8 @@ func NewBatchService(s store.Store, itemSvc *ItemService, clock domain.Clock) *B
 }
 
 type BatchImportRequest struct {
-	WindowID string                `json:"service_station_id"`
-	Items    []RegisterItemRequest `json:"items"`
+	WaterAreaID string                `json:"water_area_id"`
+	Items       []RegisterItemRequest `json:"items"`
 }
 
 func (s *BatchService) Import(ctx context.Context, req BatchImportRequest) (*domain.BatchImportResult, error) {
@@ -56,7 +56,7 @@ func (s *BatchService) Import(ctx context.Context, req BatchImportRequest) (*dom
 
 	batch := &domain.ImportBatch{
 		ID:           result.BatchID,
-		WindowID:     req.WindowID,
+		WaterAreaID:  req.WaterAreaID,
 		BatchDate:    now,
 		TotalRows:    result.TotalRows,
 		SuccessCount: result.SuccessCount,
@@ -69,7 +69,7 @@ func (s *BatchService) Import(ctx context.Context, req BatchImportRequest) (*dom
 		if err := tx.SaveBatch(ctx, batch); err != nil {
 			return fmt.Errorf("save batch: %w", err)
 		}
-		audit := auditlog.NewEntry(batch.ID, "batch", auditlog.ActionBatchImport, req.WindowID, now,
+		audit := auditlog.NewEntry(batch.ID, "batch", auditlog.ActionBatchImport, req.WaterAreaID, now,
 			fmt.Sprintf("%d success, %d fail", result.SuccessCount, result.FailureCount))
 		return tx.SaveAudit(ctx, audit)
 	}); err != nil {
@@ -84,7 +84,7 @@ type BatchExportRequest struct {
 	To   time.Time `json:"to"`
 }
 
-func (s *BatchService) Export(ctx context.Context, req BatchExportRequest) ([]*domain.RightsCase, int, error) {
+func (s *BatchService) Export(ctx context.Context, req BatchExportRequest) ([]*domain.RiskCase, int, error) {
 	return s.store.ListItems(ctx, domain.ItemFilter{
 		From:     req.From,
 		To:       req.To,

@@ -12,14 +12,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
 
-	"culturecamp/internal/applog"
-	"culturecamp/internal/auth"
-	"culturecamp/internal/config"
-	"culturecamp/internal/dispatch"
-	"culturecamp/internal/scheduler"
-	"culturecamp/internal/service"
-	"culturecamp/internal/store"
-	"culturecamp/internal/worker"
+	"watersafety/internal/applog"
+	"watersafety/internal/auth"
+	"watersafety/internal/config"
+	"watersafety/internal/dispatch"
+	"watersafety/internal/scheduler"
+	"watersafety/internal/service"
+	"watersafety/internal/store"
+	"watersafety/internal/worker"
 )
 
 type Server struct {
@@ -100,12 +100,12 @@ func (s *Server) setupRouter() {
 			r.Post("/{id}/complete", s.completeItem)
 		})
 		r.Route("/rules", func(r chi.Router) {
-			r.With(s.requireRoles(auth.RoleAdmin, auth.RoleProsecutor)).Post("/", s.createRule)
+			r.With(s.requireRoles(auth.RoleAdmin, auth.RoleWaterPatrolInspector)).Post("/", s.createRule)
 			r.Get("/", s.listRules)
 			r.Get("/{version}", s.getRule)
 		})
 		r.Route("/batches", func(r chi.Router) {
-			r.With(s.requireRoles(auth.RoleAdmin, auth.RoleProsecutor)).Post("/import", s.batchImport)
+			r.With(s.requireRoles(auth.RoleAdmin, auth.RoleWaterPatrolInspector)).Post("/import", s.batchImport)
 			r.Get("/export", s.batchExport)
 			r.Get("/", s.listBatches)
 		})

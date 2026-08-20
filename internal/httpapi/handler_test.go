@@ -16,14 +16,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"culturecamp/internal/applog"
-	"culturecamp/internal/auth"
-	"culturecamp/internal/config"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/httpapi"
-	"culturecamp/internal/repo"
-	"culturecamp/internal/scheduler"
-	"culturecamp/internal/service"
+	"watersafety/internal/applog"
+	"watersafety/internal/auth"
+	"watersafety/internal/config"
+	"watersafety/internal/domain"
+	"watersafety/internal/httpapi"
+	"watersafety/internal/repo"
+	"watersafety/internal/scheduler"
+	"watersafety/internal/service"
 )
 
 func setupHTTPTest(t *testing.T) (*httptest.Server, *repo.Store, *clock.Mock) {
@@ -47,8 +47,8 @@ func setupHTTPTest(t *testing.T) (*httptest.Server, *repo.Store, *clock.Mock) {
 	cfg := config.Defaults()
 	cfg.Auth.BootstrapUsers = []config.AuthBootstrapUser{
 		{ID: "u-admin", Username: "admin", Password: "test-admin-password", Role: string(auth.RoleAdmin)},
-		{ID: "u-prosecutor", Username: "prosecutor", Password: "test-prosecutor-password", Role: string(auth.RoleProsecutor)},
-		{ID: "u-counselor", Username: "counselor", Password: "test-counselor-password", Role: string(auth.RoleCounselor)},
+		{ID: "u-patrol", Username: "water_patrol_inspector", Password: "test-patrol-password", Role: string(auth.RoleWaterPatrolInspector)},
+		{ID: "u-emergency", Username: "emergency_coordinator", Password: "test-emergency-password", Role: string(auth.RoleEmergencyCoordinator)},
 	}
 	cfg.Storage.DataDir = dir
 	cfg.Auth.Required = false
@@ -88,7 +88,7 @@ func TestHandler_RegisterItem(t *testing.T) {
 		`{"external_ref":"REF-HTTP-001","title":"HTTP Test","reported_by":"user1"}`)
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 
-	var item domain.RightsCase
+	var item domain.RiskCase
 	require.NoError(t, json.Unmarshal(readBody(t, resp), &item))
 	assert.Equal(t, "HTTP Test", item.Title)
 	assert.Equal(t, domain.StatusAdjudicated, item.Status)
@@ -114,7 +114,7 @@ func TestHandler_HealthzReady(t *testing.T) {
 
 func TestHandler_AuthLoginMeLogoutLifecycle(t *testing.T) {
 	ts, _, _ := setupHTTPTest(t)
-	loginResp := postJSON(t, ts, "/api/auth/login", `{"username":"prosecutor","password":"test-prosecutor-password"}`)
+	loginResp := postJSON(t, ts, "/api/auth/login", `{"username":"water_patrol_inspector","password":"test-patrol-password"}`)
 	require.Equal(t, http.StatusOK, loginResp.StatusCode)
 	var login struct {
 		Token string `json:"token"`
@@ -151,7 +151,7 @@ func TestHandler_ListItemsPagination(t *testing.T) {
 	ts, _, _ := setupHTTPTest(t)
 
 	for i := 0; i < 25; i++ {
-		body := fmt.Sprintf(`{"external_ref":"REF-PAGE-%d","title":"Page RightsCase %d","reported_by":"user1"}`, i, i)
+		body := fmt.Sprintf(`{"external_ref":"REF-PAGE-%d","title":"Page RiskCase %d","reported_by":"user1"}`, i, i)
 		resp := postJSON(t, ts, "/api/items", body)
 		require.Equal(t, http.StatusCreated, resp.StatusCode)
 		resp.Body.Close()
@@ -181,7 +181,7 @@ func TestHandler_InvalidTransitionHTTP(t *testing.T) {
 	resp := postJSON(t, ts, "/api/items",
 		`{"external_ref":"REF-HTTP-TRANS","title":"Transition HTTP","reported_by":"user1"}`)
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
-	var item domain.RightsCase
+	var item domain.RiskCase
 	json.Unmarshal(readBody(t, resp), &item)
 
 	startResp, err := http.Post(ts.URL+"/api/items/"+item.ID+"/start?actor=u1", "application/json", bytes.NewReader([]byte("{}")))
@@ -209,7 +209,7 @@ func TestHandler_GetItemDetail(t *testing.T) {
 	resp := postJSON(t, ts, "/api/items",
 		`{"external_ref":"REF-DETAIL-001","title":"Detail Test","reported_by":"user1"}`)
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
-	var item domain.RightsCase
+	var item domain.RiskCase
 	json.Unmarshal(readBody(t, resp), &item)
 
 	detailResp, err := http.Get(ts.URL + "/api/items/" + item.ID)
@@ -246,7 +246,7 @@ func TestHandler_EscalationViaScheduler(t *testing.T) {
 	resp := postJSON(t, ts, "/api/items",
 		`{"external_ref":"REF-ESC-HTTP","title":"Escalation HTTP","reported_by":"user1"}`)
 	require.Equal(t, http.StatusCreated, resp.StatusCode)
-	var item domain.RightsCase
+	var item domain.RiskCase
 	json.Unmarshal(readBody(t, resp), &item)
 
 	startResp, err := http.Post(ts.URL+"/api/items/"+item.ID+"/start?actor=u1", "application/json", bytes.NewReader([]byte("{}")))

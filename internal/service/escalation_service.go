@@ -8,9 +8,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"culturecamp/internal/auditlog"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/store"
+	"watersafety/internal/auditlog"
+	"watersafety/internal/domain"
+	"watersafety/internal/store"
 )
 
 type EscalationService struct {
@@ -47,7 +47,7 @@ func (s *EscalationService) CheckAndEscalate(ctx context.Context) ([]*domain.Esc
 	return escalations, nil
 }
 
-func (s *EscalationService) escalateItem(ctx context.Context, item *domain.RightsCase, now time.Time) (*domain.Escalation, error) {
+func (s *EscalationService) escalateItem(ctx context.Context, item *domain.RiskCase, now time.Time) (*domain.Escalation, error) {
 	newLevel := item.EscalationLevel + 1
 	if newLevel > s.maxLevel {
 		return nil, fmt.Errorf("item %s at level %d: %w", item.ID, item.EscalationLevel, domain.ErrMaxEscalationReached)
@@ -110,7 +110,7 @@ func (s *EscalationService) escalateItem(ctx context.Context, item *domain.Right
 	return esc, nil
 }
 
-func (s *EscalationService) recordPermanentFailure(ctx context.Context, item *domain.RightsCase, now time.Time, cause error) error {
+func (s *EscalationService) recordPermanentFailure(ctx context.Context, item *domain.RiskCase, now time.Time, cause error) error {
 	failure := &domain.PermanentFailure{
 		ID:            uuid.NewString(),
 		EntityType:    "item",

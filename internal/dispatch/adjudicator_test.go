@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"culturecamp/internal/domain"
+	"watersafety/internal/domain"
 )
 
 func newTestClock() clock.Clock {
@@ -21,7 +21,7 @@ func TestAdjudicator_UniqueLeadDepartment(t *testing.T) {
 	now := clk.Now()
 	adj := NewAdjudicator(clk)
 
-	item := &domain.RightsCase{
+	item := &domain.RiskCase{
 		ID:           "item-1",
 		Category:     "tax",
 		Keywords:     []string{"refund"},
@@ -54,7 +54,7 @@ func TestAdjudicator_RuleVersionSelection(t *testing.T) {
 	now := clk.Now()
 	adj := NewAdjudicator(clk)
 
-	item := &domain.RightsCase{
+	item := &domain.RiskCase{
 		ID:           "item-v2",
 		Category:     "tax",
 		RegisteredAt: now,
@@ -93,7 +93,7 @@ func TestAdjudicator_PriorityOrdering(t *testing.T) {
 	now := clk.Now()
 	adj := NewAdjudicator(clk)
 
-	item := &domain.RightsCase{
+	item := &domain.RiskCase{
 		ID:           "item-prio",
 		Category:     "tax",
 		Keywords:     []string{"refund"},
@@ -133,7 +133,7 @@ func TestAdjudicator_NoMatchingRule(t *testing.T) {
 	now := clk.Now()
 	adj := NewAdjudicator(clk)
 
-	item := &domain.RightsCase{
+	item := &domain.RiskCase{
 		ID:           "item-nomatch",
 		Category:     "unknown",
 		RegisteredAt: now,
@@ -161,7 +161,7 @@ func TestAdjudicator_DefaultRuleFallback(t *testing.T) {
 	now := clk.Now()
 	adj := NewAdjudicator(clk)
 
-	item := &domain.RightsCase{
+	item := &domain.RiskCase{
 		ID:           "item-default",
 		Category:     "unknown",
 		RegisteredAt: now,

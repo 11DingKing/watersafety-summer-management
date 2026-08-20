@@ -1,4 +1,4 @@
-module culturecamp
+module watersafety
 
 go 1.26
 

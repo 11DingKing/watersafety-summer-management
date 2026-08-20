@@ -9,12 +9,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"culturecamp/internal/applog"
-	"culturecamp/internal/config"
-	"culturecamp/internal/dispatch"
-	"culturecamp/internal/domain"
-	"culturecamp/internal/repo"
-	"culturecamp/internal/service"
+	"watersafety/internal/applog"
+	"watersafety/internal/config"
+	"watersafety/internal/dispatch"
+	"watersafety/internal/domain"
+	"watersafety/internal/repo"
+	"watersafety/internal/service"
 )
 
 func setupSchedulerTest(t *testing.T) (*Scheduler, *repo.Store, *clock.Mock, context.Context) {

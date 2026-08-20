@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"culturecamp/internal/domain"
-	"culturecamp/internal/index"
-	"culturecamp/internal/shard"
-	"culturecamp/internal/store"
+	"watersafety/internal/domain"
+	"watersafety/internal/index"
+	"watersafety/internal/shard"
+	"watersafety/internal/store"
 )
 
 type Store struct {
@@ -70,19 +70,19 @@ func (s *Store) Close() error { return s.index.Close() }
 
 func (s *Store) Ping(ctx context.Context) error { return s.index.Ping(ctx) }
 
-func (s *Store) GetItem(ctx context.Context, id string) (*domain.RightsCase, error) {
+func (s *Store) GetItem(ctx context.Context, id string) (*domain.RiskCase, error) {
 	return s.index.GetItemByID(ctx, id)
 }
 
-func (s *Store) GetItemByExternalRef(ctx context.Context, ref string) (*domain.RightsCase, error) {
+func (s *Store) GetItemByExternalRef(ctx context.Context, ref string) (*domain.RiskCase, error) {
 	return s.index.GetItemByExternalRef(ctx, ref)
 }
 
-func (s *Store) ListItems(ctx context.Context, filter domain.ItemFilter) ([]*domain.RightsCase, int, error) {
+func (s *Store) ListItems(ctx context.Context, filter domain.ItemFilter) ([]*domain.RiskCase, int, error) {
 	return s.index.ListItems(ctx, filter)
 }
 
-func (s *Store) FindOverdueItems(ctx context.Context, now time.Time, maxLevel int) ([]*domain.RightsCase, error) {
+func (s *Store) FindOverdueItems(ctx context.Context, now time.Time, maxLevel int) ([]*domain.RiskCase, error) {
 	return s.index.FindOverdueItems(ctx, now, maxLevel)
 }
 
@@ -144,7 +144,7 @@ func (t *storeTx) Commit() error { return t.tx.Commit() }
 
 func (t *storeTx) Rollback() error { return t.tx.Rollback() }
 
-func (t *storeTx) SaveItem(ctx context.Context, item *domain.RightsCase) error {
+func (t *storeTx) SaveItem(ctx context.Context, item *domain.RiskCase) error {
 	data, err := json.Marshal(item)
 	if err != nil {
 		return fmt.Errorf("marshal item: %w", err)
@@ -158,7 +158,7 @@ func (t *storeTx) SaveItem(ctx context.Context, item *domain.RightsCase) error {
 	return t.tx.InsertItem(ctx, item)
 }
 
-func (t *storeTx) UpdateItem(ctx context.Context, item *domain.RightsCase) error {
+func (t *storeTx) UpdateItem(ctx context.Context, item *domain.RiskCase) error {
 	data, err := json.Marshal(item)
 	if err != nil {
 		return fmt.Errorf("marshal item: %w", err)

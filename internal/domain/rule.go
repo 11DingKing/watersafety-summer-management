@@ -42,7 +42,7 @@ func (r *Rule) IsActiveAt(t time.Time) bool {
 	return true
 }
 
-func (r *Rule) Matches(item *RightsCase) bool {
+func (r *Rule) Matches(item *RiskCase) bool {
 	if r.IsDefault {
 		return true
 	}

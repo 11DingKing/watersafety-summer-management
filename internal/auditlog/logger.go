@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"culturecamp/internal/domain"
+	"watersafety/internal/domain"
 )
 
 func NewEntry(entityID, entityType, action, actor string, timestamp time.Time, details string) *domain.AuditEntry {

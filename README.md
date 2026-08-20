@@ -10,10 +10,10 @@ WaterSafety 面向学校、社区和公共水域管理部门的儿童防溺水�
 
 ```
 cmd/
-  culturecamp/        HTTP 服务入口，优雅关闭、信号处理
+  watersafety/        HTTP 服务入口，优雅关闭、信号处理
   culturectl/         运维命令行（init / import / export / reconcile / rebuild-index / diagnose）
 internal/
-  domain/           领域模型：RightsCase / Rule / Referral / Escalation / AuditEntry / PermanentFailure / ImportBatch
+  domain/           领域模型：RiskCase / Rule / Referral / Escalation / AuditEntry / PermanentFailure / ImportBatch
                     显式状态机跃迁表、领域错误、时钟接口
   dispatch/         分办裁定引擎：规则匹配、优先级排序、唯一牵头部门裁定
   service/          业务编排：注册裁定、超期升级、规则版本、批量导入导出、查询统计
@@ -39,7 +39,7 @@ migrations/
 
 核心业务实体落在分片文件（追加写 JSONL，按日期分桶）与 SQLite 索引（查询、事务、唯一约束）中，二者通过业务键关联：
 
-- **权益诉求 items** — 主实体，`external_ref` 唯一（重复报送只登记一次），承载学生、证据、诉求类别、承办机构、承诺时限和升级层级。
+- **水域风险线索 items** — 主实体，`external_ref` 唯一（重复报送只登记一次），承载水域、受影响人员、现场证据、风险类别、牵头部门、整改时限和升级层级。
 - **分办规则 rules** — 带版本号与生效窗口；新规则生效时旧规则被标记为 `superseded`，已办结事项保留当时规则结论。
 - **裁定记录 assignments** — 通过 `item_id` 关联事项、通过 `rule_version` 关联规则；`is_current` 标记当前生效裁定，升级时旧裁定被置为非当前。
 - **升级记录 escalations** — 通过 `item_id` 关联事项，记录层级跃迁、新旧牵头部门、新承诺时限。
@@ -51,27 +51,27 @@ migrations/
 
 ## 配置项
 
-配置通过 YAML 文件加载，环境变量覆盖（前缀 `CULTURECAMP_`）。参考 `config.example.yaml` 与 `.env.example`。
+配置通过 YAML 文件加载，环境变量覆盖（前缀 `WATERSAFETY_`）。参考 `config.example.yaml` 与 `.env.example`。
 
 | 配置键 | 环境变量 | 默认值 | 说明 |
 |---|---|---|---|
-| server.port | CULTURECAMP_SERVER_PORT | 49660 | HTTP 监听端口 |
-| server.read_timeout | CULTURECAMP_SERVER_READ_TIMEOUT | 30s | 读超时 |
-| server.write_timeout | CULTURECAMP_SERVER_WRITE_TIMEOUT | 30s | 写超时 |
-| server.shutdown_timeout | CULTURECAMP_SERVER_SHUTDOWN_TIMEOUT | 15s | 优雅关闭超时 |
-| storage.data_dir | CULTURECAMP_STORAGE_DATA_DIR | ./data | 数据目录（分片 + index.db） |
-| storage.shard_max_size | CULTURECAMP_STORAGE_SHARD_MAX_SIZE | 1048576 | 单分片文件上限字节，超出轮转 |
-| storage.sync_on_write | CULTURECAMP_STORAGE_SYNC_ON_WRITE | true | 每次追加是否 fsync |
-| scheduler.escalation_interval | CULTURECAMP_SCHEDULER_ESCALATION_INTERVAL | 30s | 超期升级巡检周期 |
-| scheduler.reconciliation_interval | CULTURECAMP_SCHEDULER_RECONCILIATION_INTERVAL | 5m | 核对巡检周期 |
-| scheduler.reeval_interval | CULTURECAMP_SCHEDULER_REEVAL_INTERVAL | 1m | 规则版本演进重评估巡检周期 |
-| scheduler.max_retries | CULTURECAMP_SCHEDULER_MAX_RETRIES | 3 | 最大重试次数 |
-| scheduler.base_backoff | CULTURECAMP_SCHEDULER_BASE_BACKOFF | 1s | 退避基数 |
-| scheduler.task_timeout | CULTURECAMP_SCHEDULER_TASK_TIMEOUT | 10s | 单次任务超时 |
-| business.default_deadline | CULTURECAMP_BUSINESS_DEFAULT_DEADLINE | 72h | 默认承诺时限 |
-| business.escalation_deadline_extension | CULTURECAMP_BUSINESS_ESCALATION_DEADLINE_EXTENSION | 48h | 升级后新承诺时限 |
-| business.max_escalation_level | CULTURECAMP_BUSINESS_MAX_ESCALATION_LEVEL | 3 | 最大升级层级 |
-| auth.bootstrap_users | CULTURECAMP_AUTH_BOOTSTRAP_USERS | 无默认值 | 首次启动时通过 JSON 注入账号；口令只用于生成 bcrypt 哈希，不写入配置文件 |
+| server.port | WATERSAFETY_SERVER_PORT | 49660 | HTTP 监听端口 |
+| server.read_timeout | WATERSAFETY_SERVER_READ_TIMEOUT | 30s | 读超时 |
+| server.write_timeout | WATERSAFETY_SERVER_WRITE_TIMEOUT | 30s | 写超时 |
+| server.shutdown_timeout | WATERSAFETY_SERVER_SHUTDOWN_TIMEOUT | 15s | 优雅关闭超时 |
+| storage.data_dir | WATERSAFETY_STORAGE_DATA_DIR | ./data | 数据目录（分片 + index.db） |
+| storage.shard_max_size | WATERSAFETY_STORAGE_SHARD_MAX_SIZE | 1048576 | 单分片文件上限字节，超出轮转 |
+| storage.sync_on_write | WATERSAFETY_STORAGE_SYNC_ON_WRITE | true | 每次追加是否 fsync |
+| scheduler.escalation_interval | WATERSAFETY_SCHEDULER_ESCALATION_INTERVAL | 30s | 超期升级巡检周期 |
+| scheduler.reconciliation_interval | WATERSAFETY_SCHEDULER_RECONCILIATION_INTERVAL | 5m | 核对巡检周期 |
+| scheduler.reeval_interval | WATERSAFETY_SCHEDULER_REEVAL_INTERVAL | 1m | 规则版本演进重评估巡检周期 |
+| scheduler.max_retries | WATERSAFETY_SCHEDULER_MAX_RETRIES | 3 | 最大重试次数 |
+| scheduler.base_backoff | WATERSAFETY_SCHEDULER_BASE_BACKOFF | 1s | 退避基数 |
+| scheduler.task_timeout | WATERSAFETY_SCHEDULER_TASK_TIMEOUT | 10s | 单次任务超时 |
+| business.default_deadline | WATERSAFETY_BUSINESS_DEFAULT_DEADLINE | 72h | 默认承诺时限 |
+| business.escalation_deadline_extension | WATERSAFETY_BUSINESS_ESCALATION_DEADLINE_EXTENSION | 48h | 升级后新承诺时限 |
+| business.max_escalation_level | WATERSAFETY_BUSINESS_MAX_ESCALATION_LEVEL | 3 | 最大升级层级 |
+| auth.bootstrap_users | WATERSAFETY_AUTH_BOOTSTRAP_USERS | 无默认值 | 首次启动时通过 JSON 注入账号；口令只用于生成 bcrypt 哈希，不写入配置文件 |
 
 ## 迁移方式
 
@@ -88,11 +88,11 @@ go run ./cmd/culturectl init -data-dir ./data
 
 # 启动 HTTP 服务（默认端口 49660）。首次启动必须注入至少一个账号；请在 shell
 # 或密钥管理器中提供真实口令，不要把它写入配置文件或提交到 Git。
-CULTURECAMP_AUTH_BOOTSTRAP_USERS='[{"id":"u-admin","username":"admin","password":"<strong-password>","role":"admin"}]' \\
-  go run ./cmd/culturecamp config.example.yaml
+WATERSAFETY_AUTH_BOOTSTRAP_USERS='[{"id":"u-admin","username":"admin","password":"<strong-password>","role":"admin"}]' \\
+  go run ./cmd/watersafety config.example.yaml
 
 # 或用环境变量覆盖端口与数据目录
-CULTURECAMP_SERVER_PORT=49660 CULTURECAMP_STORAGE_DATA_DIR=./data go run ./cmd/culturecamp
+WATERSAFETY_SERVER_PORT=49660 WATERSAFETY_STORAGE_DATA_DIR=./data go run ./cmd/watersafety
 ```
 
 服务启动后：
@@ -104,8 +104,8 @@ CULTURECAMP_SERVER_PORT=49660 CULTURECAMP_STORAGE_DATA_DIR=./data go run ./cmd/c
 
 | 方法 | 路径 | 说明 |
 |---|---|---|
-| POST | /api/items | 登记暑期托管报名并分派承办机构 |
-| GET | /api/items | 分页查询诉求（状态/承办机构/服务站/时间/超期筛选） |
+| POST | /api/items | 登记水域风险线索并分派承办机构 |
+| GET | /api/items | 分页查询水域风险线索（状态/牵头部门/水域/时间/逾期筛选） |
 | GET | /api/items/{id} | 事项详情（含裁定、升级、审计链） |
 | PATCH | /api/items/{id} | 修改事项信息 |
 | POST | /api/items/{id}/start | 开始办理 |
@@ -135,13 +135,13 @@ curl -s -X POST http://localhost:49660/api/items \
     "external_ref": "WIN-20260819-0001",
     "title": "河道巡查发现儿童戏水风险",
     "description": "巡查员在灌溉渠附近发现未设置警示牌",
-    "applicant_name": "巡查员李明",
-    "applicant_contact": "13800000001",
+    "affected_person_name": "巡查员李明",
+    "reporter_contact": "13800000001",
     "materials": ["现场照片.jpg"],
     "category": "水域风险",
     "keywords": ["灌溉渠", "警示牌"],
     "reported_by": "巡查员李明",
-    "service_station_id": "SZ-07"
+    "water_area_id": "SZ-07"
   }'
 ```
 
@@ -151,8 +151,8 @@ curl -s -X POST http://localhost:49660/api/items \
 curl -s -X POST http://localhost:49660/api/batches/import \
   -H 'Content-Type: application/json' \
   -d '{"items":[
-    {"external_ref":"B-001","title":"学校生存游泳课程补报","reported_by":"教师王芳","service_station_id":"SC-03"},
-    {"external_ref":"B-002","title":"池塘巡查隐患整改","reported_by":"村干部赵强","service_station_id":"SC-03"}
+    {"external_ref":"B-001","title":"学校生存游泳课程补报","reported_by":"教师王芳","water_area_id":"SC-03"},
+    {"external_ref":"B-002","title":"池塘巡查隐患整改","reported_by":"村干部赵强","water_area_id":"SC-03"}
   ]}'
 ```
 

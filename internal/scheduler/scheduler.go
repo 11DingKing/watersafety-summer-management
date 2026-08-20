@@ -8,10 +8,10 @@ import (
 
 	"github.com/benbjohnson/clock"
 
-	"culturecamp/internal/applog"
-	"culturecamp/internal/config"
-	"culturecamp/internal/service"
-	"culturecamp/internal/store"
+	"watersafety/internal/applog"
+	"watersafety/internal/config"
+	"watersafety/internal/service"
+	"watersafety/internal/store"
 )
 
 type Scheduler struct {

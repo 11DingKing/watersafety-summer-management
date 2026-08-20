@@ -82,26 +82,26 @@ func TestStateMachine_SameStatusAllowed(t *testing.T) {
 
 func TestItem_IsOverdue(t *testing.T) {
 	now := time.Date(2026, 8, 19, 12, 0, 0, 0, time.UTC)
-	item := &RightsCase{Deadline: now.Add(-1 * time.Hour), Status: StatusInProgress}
+	item := &RiskCase{Deadline: now.Add(-1 * time.Hour), Status: StatusInProgress}
 	assert.True(t, item.IsOverdue(now))
 	assert.False(t, item.IsOverdue(now.Add(-2*time.Hour)))
 
-	completed := &RightsCase{Deadline: now.Add(-1 * time.Hour), Status: StatusCompleted}
+	completed := &RiskCase{Deadline: now.Add(-1 * time.Hour), Status: StatusCompleted}
 	assert.False(t, completed.IsOverdue(now))
 }
 
 func TestItem_Validate(t *testing.T) {
-	item := &RightsCase{ExternalRef: "REF-001", Title: "Test", RegisteredBy: "user1", Deadline: time.Now()}
+	item := &RiskCase{ExternalRef: "REF-001", Title: "Test", RegisteredBy: "user1", Deadline: time.Now()}
 	assert.NoError(t, item.Validate())
 
-	bad := &RightsCase{ExternalRef: "", Title: "Test", RegisteredBy: "user1", Deadline: time.Now()}
+	bad := &RiskCase{ExternalRef: "", Title: "Test", RegisteredBy: "user1", Deadline: time.Now()}
 	err := bad.Validate()
 	require.Error(t, err)
 	assert.ErrorIs(t, err, ErrValidation)
 }
 
 func TestRule_Matches(t *testing.T) {
-	item := &RightsCase{Category: "tax", Keywords: []string{"property", "refund"}}
+	item := &RiskCase{Category: "tax", Keywords: []string{"property", "refund"}}
 	rule := &Rule{
 		MatchCategory: "tax",
 		MatchKeywords: []string{"refund"},

@@ -7,7 +7,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"culturecamp/internal/domain"
+	"watersafety/internal/domain"
 )
 
 type Adjudicator struct {
@@ -18,7 +18,7 @@ func NewAdjudicator(clock domain.Clock) *Adjudicator {
 	return &Adjudicator{clock: clock}
 }
 
-func (a *Adjudicator) Adjudicate(ctx context.Context, item *domain.RightsCase, rules []*domain.Rule) (*domain.Referral, error) {
+func (a *Adjudicator) Adjudicate(ctx context.Context, item *domain.RiskCase, rules []*domain.Rule) (*domain.Referral, error) {
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()

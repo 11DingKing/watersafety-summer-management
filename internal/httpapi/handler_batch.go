@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"culturecamp/internal/domain"
-	"culturecamp/internal/service"
+	"watersafety/internal/domain"
+	"watersafety/internal/service"
 )
 
 func (s *Server) batchImport(w http.ResponseWriter, r *http.Request) {
@@ -48,9 +48,9 @@ func (s *Server) batchExport(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) listBatches(w http.ResponseWriter, r *http.Request) {
 	filter := domain.BatchFilter{
-		WindowID:   r.URL.Query().Get("service_station_id"),
-		PageSize:   parsePageSize(r),
-		PageOffset: parsePageOffset(r),
+		WaterAreaID: r.URL.Query().Get("water_area_id"),
+		PageSize:    parsePageSize(r),
+		PageOffset:  parsePageOffset(r),
 	}
 	if from := r.URL.Query().Get("from"); from != "" {
 		if t, err := time.Parse(time.RFC3339, from); err == nil {
